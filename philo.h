@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/02 18:41:12 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/02 18:58:37 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,11 @@
 typedef enum e_philo_errors
 {
 	ATOI_ERROR,
-	MALLOC_ERROR
+	MALLOC_ERROR,
+	NUM_ERRORS
 }	t_philo_errors;
+
+extern const char *philo_error_messages[NUM_ERRORS];
 
 /**
  * Structure to store user arguments
@@ -62,6 +65,6 @@ int	ft_atoi(char *str);
 /**
  * Error handling
  */
-void	ft_philo_error(int e_nb);
+void	ft_philo_error(t_philo_errors e_nb);
 
 #endif
