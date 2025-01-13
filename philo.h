@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/02 18:58:37 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/13 17:19:12 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,11 @@
 #endif
 
 # include <pthread.h>
-# include <time.h>
-# include <stdio.h>
+# include <stdio.h> //printf
+# include <stdlib.h> //malloc, free
+# include <string.h> //memset
+# include <sys/time.h> //gettimeofday
+# include <unistd.h> //usleep, write
 
 /**
  * Program error types
@@ -29,10 +32,11 @@ typedef enum e_philo_errors
 {
 	ATOI_ERROR,
 	MALLOC_ERROR,
-	NUM_ERRORS
+	OVERFLOW_ERROR,
+	INCORRECT_NB_ARGS,
+	ZERO_ARG,
+	NB_ERRORS
 }	t_philo_errors;
-
-extern const char *philo_error_messages[NUM_ERRORS];
 
 /**
  * Structure to store user arguments
@@ -40,7 +44,7 @@ extern const char *philo_error_messages[NUM_ERRORS];
  */
 typedef struct s_args
 {
-	int	philos;
+	int	nb_philos;
 	int	die_time;
 	int	eat_time;
 	int	sleep_time;
@@ -54,6 +58,7 @@ typedef struct s_args
 typedef struct s_philo
 {
 	t_args	*info;
+	int		min_nb_meals;
 }	t_philo;
 
 /**
@@ -63,7 +68,18 @@ typedef struct s_philo
 int	ft_atoi(char *str);
 
 /**
+ * Printing functions
+ * 
+ */
+void	take_fork(int milisec, int philo);
+void	eating(int milisec, int philo);
+void	sleeping(int milisec, int philo);
+void	thinking(int milisec, int philo);
+void	die(int milisec, int philo);
+
+/**
  * Error handling
+ * 
  */
 void	ft_philo_error(t_philo_errors e_nb);
 
