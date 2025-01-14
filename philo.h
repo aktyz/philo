@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/14 16:52:55 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/14 19:53:36 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,20 @@ typedef enum e_philo_errors
 	NB_ERRORS
 }	t_philo_errors;
 
+typedef enum e_cutlery_status
+{
+	TAKEN,
+	NB_STATUS
+}	t_cutlery_status;
+
+typedef enum e_philo_status
+{
+	EATING,
+	SLEEPING,
+	THINKING,
+	DEAD,
+	NB_PHILO_STATUS
+}	t_philo_status;
 /**
  * Structure to store user arguments
  *
@@ -51,15 +65,31 @@ typedef struct s_args
 	int	min_eat;
 }	t_args;
 
+typedef struct s_cutlery
+{
+	t_cutlery_status	fork_status;
+	pthread_mutex_t		fork_mutex;
+}	t_cutlery;
+
+typedef struct s_philo
+{
+	pthread_t		thread;
+	t_philo_status	philo_status;
+	t_cutlery		*left_fork;
+	t_cutlery		*right_fork;
+}	t_philo;
+
 /**
  * Our program structure
  *
  */
-typedef struct s_philo
+typedef struct s_philos
 {
-	t_args	*info;
-	int		min_nb_meals;
-}	t_philo;
+	t_args		*info;
+	t_philo		*philos;
+	t_cutlery	*forks;
+	int			min_nb_meals;
+}	t_philos;
 
 /**
  * Program utils
@@ -82,5 +112,11 @@ void	die(int milisec, int philo);
  *
  */
 void	ft_philo_error(t_philo_errors e_nb);
+
+/**
+ * Threads routines
+ *
+ */
+void	*philo_routine(void *param);
 
 #endif
