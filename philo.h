@@ -6,27 +6,27 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/13 17:19:12 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/14 16:52:55 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-#ifndef MAX_INT
-# define MAX_INT 2147483647
-#endif
+# ifndef MAX_INT
+#  define MAX_INT 2147483647
+# endif
 
 # include <pthread.h>
-# include <stdio.h> //printf
-# include <stdlib.h> //malloc, free
-# include <string.h> //memset
+# include <stdio.h>    //printf
+# include <stdlib.h>   //malloc, free
+# include <string.h>   //memset
 # include <sys/time.h> //gettimeofday
-# include <unistd.h> //usleep, write
+# include <unistd.h>   //usleep, write
 
 /**
  * Program error types
- * 
+ *
  */
 typedef enum e_philo_errors
 {
@@ -40,7 +40,7 @@ typedef enum e_philo_errors
 
 /**
  * Structure to store user arguments
- * 
+ *
  */
 typedef struct s_args
 {
@@ -53,7 +53,7 @@ typedef struct s_args
 
 /**
  * Our program structure
- * 
+ *
  */
 typedef struct s_philo
 {
@@ -63,13 +63,13 @@ typedef struct s_philo
 
 /**
  * Program utils
- * 
+ *
  */
-int	ft_atoi(char *str);
+int		ft_atoi(char *str);
 
 /**
  * Printing functions
- * 
+ *
  */
 void	take_fork(int milisec, int philo);
 void	eating(int milisec, int philo);
@@ -79,7 +79,7 @@ void	die(int milisec, int philo);
 
 /**
  * Error handling
- * 
+ *
  */
 void	ft_philo_error(t_philo_errors e_nb);
 
