@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:54 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/16 19:27:07 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/16 20:19:26 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,11 @@ static void	launch_philo(t_philos **philo, int argc, char ***argv)
 		ft_philo_error(MALLOC_ERROR);
 	}
 	init_philo(&philo, argc, argv);
-	// TODO: start the symulation if structure correctly populated
-	// otherwise:
+	if ((*philo)->forks[(*philo)->info->nb_philos - 1].mutex_init)
+	{
+		printf("Start the dinner\n");
+		// TODO: start the symulation if structure correctly populated
+	}
 	clean_philo(philo);
 }
 
@@ -81,20 +84,6 @@ static void	init_philo(t_philos ***philo, int argc, char ***argv)
 		ft_philo_error(ZERO_ARG);
 		return ;
 	}
-	tmp->philos = malloc(sizeof(t_philo) * tmp->info->nb_philos);
-	if (tmp->philos == NULL)
-	{
-		clean_philo(*philo);
-		ft_philo_error(MALLOC_ERROR);
-		return ;
-	}
-	i = 0;
-	while (i < (tmp->info->nb_philos))
-	{
-		tmp->philos[i].philo_status = THINKING;
-		pthread_create(&tmp->philos[i].thread, NULL, &philo_routine, NULL);
-		i++;
-	}
 	tmp->forks = malloc(sizeof(t_cutlery) * tmp->info->nb_philos);
 	if (tmp->forks == NULL)
 	{
@@ -106,6 +95,7 @@ static void	init_philo(t_philos ***philo, int argc, char ***argv)
 	while (i < (tmp->info->nb_philos))
 	{
 		(tmp->forks)[i].fork_status = AVAILABLE;
+		tmp->forks[i].mutex_init = 0;
 		if (pthread_mutex_init(&tmp->forks[i].fork_mutex, NULL) != 0)
 		{
 			j = 0;
@@ -119,6 +109,24 @@ static void	init_philo(t_philos ***philo, int argc, char ***argv)
 			ft_philo_error(MUTEX_INIT_ERROR);
 			return ;
 		}
+		tmp->forks[i].mutex_init = 1;
+		i++;
+	}
+	tmp->philos = malloc(sizeof(t_philo) * tmp->info->nb_philos);
+	if (tmp->philos == NULL)
+	{
+		clean_philo(*philo);
+		ft_philo_error(MALLOC_ERROR);
+		return ;
+	}
+	i = 0;
+	while (i < (tmp->info->nb_philos))
+	{
+		tmp->philos[i].philo_status = THINKING;
+		assign_mutex(&tmp->philos[i], &tmp->forks);//TODO: implement the function
+		//tmp->philos[i].left_fork = tmp->forks[i];
+		//tmp->philos[i].right_fork = tmp->forks[i+1];
+		pthread_create(&tmp->philos[i].thread, NULL, &philo_routine, NULL);
 		i++;
 	}
 }

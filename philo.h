@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/16 18:58:11 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/16 20:07:58 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct s_cutlery
 {
 	t_cutlery_status	fork_status;
 	pthread_mutex_t		fork_mutex;
+	int					mutex_init;
 }	t_cutlery;
 
 typedef struct s_philo
