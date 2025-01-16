@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 18:28:57 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/14 16:41:09 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:58:00 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ const char	*g_philo_error_messages[NB_ERRORS] = {
 	"Memory allocation error",
 	"Provided integer is grater than INT_MAX, please provide smaller number",
 	"You provided incorrect number of arguments",
-	"Any of the arguments cannot be zero"
+	"Any of the arguments cannot be zero",
+	"Failed to initialize the array of mutexes"
 };
 
 void	ft_philo_error(t_philo_errors e_nb)

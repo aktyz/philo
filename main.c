@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:54 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/14 19:51:25 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/16 19:27:07 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	main(int argc, char **argv)
 		if (philo == NULL)
 			ft_philo_error(MALLOC_ERROR);
 		launch_philo(&philo, argc, &argv);
-		clean_philo(&philo);
 	}
 	else
 	{
@@ -47,16 +46,17 @@ static void	launch_philo(t_philos **philo, int argc, char ***argv)
 		ft_philo_error(MALLOC_ERROR);
 	}
 	init_philo(&philo, argc, argv);
-	// TODO: start the symulation
+	// TODO: start the symulation if structure correctly populated
+	// otherwise:
+	clean_philo(philo);
 }
 
 static void	init_philo(t_philos ***philo, int argc, char ***argv)
 {
 	int			i;
+	int			j;
 	t_philos	*tmp;
 	char		**args;
-	//t_philo		*tmp_philo;
-	//t_cutlery	*tmp_fork;
 
 	(void) argc;
 	tmp = **philo;
@@ -81,17 +81,18 @@ static void	init_philo(t_philos ***philo, int argc, char ***argv)
 		ft_philo_error(ZERO_ARG);
 		return ;
 	}
-	// TODO: create the threads and mutexes in the right structure
 	tmp->philos = malloc(sizeof(t_philo) * tmp->info->nb_philos);
 	if (tmp->philos == NULL)
 	{
 		clean_philo(*philo);
 		ft_philo_error(MALLOC_ERROR);
+		return ;
 	}
 	i = 0;
 	while (i < (tmp->info->nb_philos))
 	{
-		pthread_create(&(((tmp->philos) + i)->thread), NULL, &philo_routine, NULL);
+		tmp->philos[i].philo_status = THINKING;
+		pthread_create(&tmp->philos[i].thread, NULL, &philo_routine, NULL);
 		i++;
 	}
 	tmp->forks = malloc(sizeof(t_cutlery) * tmp->info->nb_philos);
@@ -99,31 +100,55 @@ static void	init_philo(t_philos ***philo, int argc, char ***argv)
 	{
 		clean_philo(*philo);
 		ft_philo_error(MALLOC_ERROR);
+		return ;
+	}
+	i = 0;
+	while (i < (tmp->info->nb_philos))
+	{
+		(tmp->forks)[i].fork_status = AVAILABLE;
+		if (pthread_mutex_init(&tmp->forks[i].fork_mutex, NULL) != 0)
+		{
+			j = 0;
+			while (j < i)
+			{
+				pthread_mutex_destroy(&tmp->forks[i].fork_mutex);
+				j++;
+			}
+			free(tmp->forks);
+			clean_philo(*philo);
+			ft_philo_error(MUTEX_INIT_ERROR);
+			return ;
+		}
+		i++;
 	}
 }
 
 static void	clean_philo(t_philos **philo)
 {
 	int	i;
-	
-	if ((*philo)->info)
-		free((*philo)->info);
+
 	if ((*philo)->philos)
 	{
-		// TODO: iterate through philos and wait for threads
 		i = 0;
-		while(i < (*philo)->info->nb_philos)
+		while (i < (*philo)->info->nb_philos)
 		{
-			pthread_join(((*philo)->philos + i)->thread, NULL);
+			pthread_join((*philo)->philos[i].thread, NULL);
 			i++;
 		}
 		free((*philo)->philos);
 	}
 	if ((*philo)->forks)
 	{
-		// TODO: destroy the mutexes in a loop
+		i = 0;
+		while (i < (*philo)->info->nb_philos)
+		{
+			pthread_mutex_destroy(&(*philo)->forks[i].fork_mutex);
+			i++;
+		}
 		free((*philo)->forks);
 	}
+	if ((*philo)->info)
+		free((*philo)->info);
 	if (*philo)
 		free(*philo);
 }

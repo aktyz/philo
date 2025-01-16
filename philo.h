@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/14 19:53:36 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:58:11 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,13 @@ typedef enum e_philo_errors
 	OVERFLOW_ERROR,
 	INCORRECT_NB_ARGS,
 	ZERO_ARG,
+	MUTEX_INIT_ERROR,
 	NB_ERRORS
 }	t_philo_errors;
 
 typedef enum e_cutlery_status
 {
+	AVAILABLE,
 	TAKEN,
 	NB_STATUS
 }	t_cutlery_status;
