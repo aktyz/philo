@@ -6,7 +6,7 @@
 #    By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/14 16:28:52 by zslowian          #+#    #+#              #
-#    Updated: 2025/01/14 19:51:59 by zslowian         ###   ########.fr        #
+#    Updated: 2025/01/19 15:17:36 by zslowian         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,9 @@ RM = rm -f
 CC = cc
 
 SRC = main.c \
+	clean.c \
 	errors.c \
+	init.c \
 	logs.c \
 	routines.c \
 	utils.c
@@ -34,7 +36,7 @@ all: $(NAME)
 clean:
 	@$(RM) $(OBJ)
 
-debug:
+debug: $(OBJ)
 	@$(CC) $(FLAGS) $(OBJ) -o $(NAME) -g -pthread
 
 fclean: clean

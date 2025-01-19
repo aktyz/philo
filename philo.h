@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/16 20:07:58 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/19 16:40:32 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,17 +69,19 @@ typedef struct s_args
 
 typedef struct s_cutlery
 {
-	t_cutlery_status	fork_status;
+	t_cutlery_status	fork_status;// TODO: remove (?)
 	pthread_mutex_t		fork_mutex;
-	int					mutex_init;
+	int					mutex_init;// TODO: remove (?)
 }	t_cutlery;
 
 typedef struct s_philo
 {
 	pthread_t		thread;
+	int				philo_nb;
+	int				meal_nb;
 	t_philo_status	philo_status;
-	t_cutlery		*left_fork;
-	t_cutlery		*right_fork;
+	t_cutlery		*first_fork;
+	t_cutlery		*second_fork;
 }	t_philo;
 
 /**
@@ -93,7 +95,12 @@ typedef struct s_philos
 	t_cutlery	*forks;
 	int			min_nb_meals;
 }	t_philos;
-
+/**
+ * Core functions
+ * 
+ */
+void	init_philo(t_philos ***philo, int argc, char ***argv);
+void	clean_philo(t_philos **philo);
 /**
  * Program utils
  *
@@ -121,5 +128,11 @@ void	ft_philo_error(t_philo_errors e_nb);
  *
  */
 void	*philo_routine(void *param);
+
+typedef struct s_philo_r
+{
+	t_args	*info;
+	t_philo	*philo;
+}	t_philo_r;
 
 #endif
