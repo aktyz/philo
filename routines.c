@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 19:42:47 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 17:18:03 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 19:03:32 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,19 @@ void	*philo_routine(void *param)
 	args = (t_philo_r *) param;
 	philo = args->philo;
 	info = args->info;
-	while (philo->philo_status != DEAD)
+	while (philo->philo_status != DEAD || info->is_terminated != true) // TODO: figure out where and how to check the variables in order to end the program in the right place
 	{
+		if (info->min_nb_meals && philo->meal_nb == info->min_eat)
+			break ;
 		philo_take_forks(philo, info);
 		gettimeofday(&time_stamp, NULL);
 		if (convert_to_miliseconds(subtract_timeval(time_stamp, philo->meal_start_time))
-			> info->die_time || info->is_terminated == true)
+			> info->die_time)
 		{
-			philo->philo_status == DEAD;
+			philo->philo_status = DEAD;
+			gettimeofday(&time_stamp, NULL);
+			pthread_mutex_lock(&info->print); // TODO: nothing more will be printed but what about the treads hanging on this lock - how to move them from there
+			die(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->print);
 			break ;
 		}
 		else
@@ -63,7 +68,7 @@ void	*waiter_routine(void *param)
 		{
 			if (args->philos[i].philo_status == DEAD)
 			{
-				args->info->is_terminated = true;
+				args->info->is_terminated = true; // TODO: add a mutex on this variable
 			}
 			i++;
 		}

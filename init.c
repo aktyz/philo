@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 13:47:10 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 17:17:14 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:39:39 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	if (args[5])
 	{
 		tmp->info->min_eat = ft_atoi(args[5]);
-		tmp->min_nb_meals = 1;
+		tmp->info->min_nb_meals = true;
 	}
 	if ((tmp->info->nb_philos == 0 || tmp->info->die_time == 0
 			|| tmp->info->eat_time == 0 || tmp->info->sleep_time == 0)
-		|| (tmp->min_nb_meals && tmp->info->min_eat == 0))
+		|| (tmp->info->min_nb_meals && tmp->info->min_eat == 0))
 	{
 		ft_philo_error(ZERO_ARG);
 		return ;
@@ -56,29 +56,6 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 		return ;
 	}
 	if (pthread_mutex_init(&tmp->info->print, NULL))
-	{
-		clean_philo(*philos);
-		ft_philo_error(PTHREAD_INIT_ERROR);
-		return ;
-	}
-	tmp->waiter = malloc(sizeof(t_waiter));
-	if (tmp->waiter == NULL)
-	{
-		clean_philo(*philos);
-		ft_philo_error(MALLOC_ERROR);
-		return ;
-	}
-	r_waiter = malloc(sizeof(t_waiter_r));
-	if (r_waiter == NULL)
-	{
-		clean_philo(*philos);
-		ft_philo_error(MALLOC_ERROR);
-		return ;
-	}
-	r_waiter->info = tmp->info;
-	r_waiter->philos = tmp->philos;
-	if (pthread_create(&tmp->waiter->waiter, NULL, &waiter_routine, (void *) r_waiter) ||
-		pthread_mutex_init(&tmp->waiter->waiter_mutex, NULL))
 	{
 		clean_philo(*philos);
 		ft_philo_error(PTHREAD_INIT_ERROR);
@@ -150,7 +127,30 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 			ft_philo_error(PTHREAD_INIT_ERROR);
 		}
 		i++;
-	}	
+	}
+	tmp->waiter = malloc(sizeof(t_waiter));
+	if (tmp->waiter == NULL)
+	{
+		clean_philo(*philos);
+		ft_philo_error(MALLOC_ERROR);
+		return ;
+	}
+	r_waiter = malloc(sizeof(t_waiter_r));
+	if (r_waiter == NULL)
+	{
+		clean_philo(*philos);
+		ft_philo_error(MALLOC_ERROR);
+		return ;
+	}
+	r_waiter->info = tmp->info;
+	r_waiter->philos = tmp->philos;
+	if (pthread_create(&tmp->waiter->waiter, NULL, &waiter_routine, (void *) r_waiter) ||
+		pthread_mutex_init(&tmp->waiter->waiter_mutex, NULL))
+	{
+		clean_philo(*philos);
+		ft_philo_error(PTHREAD_INIT_ERROR);
+		return ;
+	}
 }
 
 static void	assign_mutex(int nb, t_philo *philo, t_cutlery *forks)

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:54 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 14:36:38 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:43:03 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	main(int argc, char **argv)
 
 static void	launch_philo(t_philos **philo, int argc, char ***argv)
 {
-	(*philo)->min_nb_meals = 0;
 	(*philo)->info = malloc(sizeof(t_args));
 	if ((*philo)->info == NULL)
 	{
@@ -44,11 +43,8 @@ static void	launch_philo(t_philos **philo, int argc, char ***argv)
 		ft_philo_error(MALLOC_ERROR);
 	}
 	gettimeofday(&(*philo)->info->start_time, NULL);
+	(*philo)->info->min_nb_meals = false;
 	init_philo(&philo, argc, argv);
-	if ((*philo)->forks[(*philo)->info->nb_philos - 1].mutex_init)
-	{
-		printf("Start the dinner\n");
-	}
 	clean_philo(philo);
 }
 

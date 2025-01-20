@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 17:15:52 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:39:25 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ typedef struct s_args
 	int				die_time;
 	int				eat_time;
 	int				sleep_time;
+	bool			min_nb_meals;
 	int				min_eat;
 	int				max_think_time;
 	s_timeval		start_time;
@@ -108,7 +109,6 @@ typedef struct s_philos
 	t_args		*info;
 	t_philo		*philos;
 	t_cutlery	*forks;
-	int			min_nb_meals;
 	t_waiter	*waiter;
 }	t_philos;
 /**
