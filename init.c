@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 13:47:10 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 14:27:27 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 15:35:35 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,12 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 	{
 		clean_philo(*philo);
 		ft_philo_error(NO_THINK_TIME_AVAILABLE);
+		return ;
+	}
+	if (pthread_mutex_init(&tmp->info->print, NULL))
+	{
+		clean_philo(*philo);
+		ft_philo_error(PTHREAD_INIT_ERROR);
 		return ;
 	}
 	tmp->waiter = malloc(sizeof(t_waiter));

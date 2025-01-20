@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 19:42:47 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 14:43:04 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 15:40:49 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,19 @@ void	*philo_routine(void *param)
 {
 	t_philo_r	*args;
 	t_philo		*philo;
+	t_args		*info;
 	
 	args = (t_philo_r *) param;
 	philo = args->philo;
+	info = args->info;
 	while (1) //TODO: how to get out of this loop -> waiter thread mechanism
 	{
-		philo_take_forks(philo, args->info->start_time);
-		philo_eat(philo, args->info->eat_time, args->info->start_time);
+		philo_take_forks(philo, info);
+		philo_eat(philo, info);
 		philo_put_down_forks(philo);
 		philo->meal_nb++;
-		philo_sleep(philo, args->info->sleep_time, args->info->start_time);
-		philo_think(philo, args->info->start_time, args->info->max_think_time);
+		philo_sleep(philo, info);
+		philo_think(philo, info);
 	}
 	free(args);
 	return (NULL);

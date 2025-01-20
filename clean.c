@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 15:13:25 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/19 15:13:49 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 15:36:45 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@ void	clean_philo(t_philos **philo)
 		free((*philo)->forks);
 	}
 	if ((*philo)->info)
-		free((*philo)->info);
+	{
+		pthread_mutex_destroy(&(*philo)->info->print);
+		free((*philo)->info);	
+	}
 	if (*philo)
 		free(*philo);
 }
