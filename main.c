@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:54 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/19 15:16:33 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:36:38 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ static void	launch_philo(t_philos **philo, int argc, char ***argv)
 		clean_philo(philo);
 		ft_philo_error(MALLOC_ERROR);
 	}
+	gettimeofday(&(*philo)->info->start_time, NULL);
 	init_philo(&philo, argc, argv);
 	if ((*philo)->forks[(*philo)->info->nb_philos - 1].mutex_init)
 	{
 		printf("Start the dinner\n");
-		// TODO: start the symulation if structure correctly populated
 	}
 	clean_philo(philo);
 }

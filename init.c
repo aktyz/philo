@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 13:47:10 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/19 16:40:55 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 14:27:27 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,28 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 		ft_philo_error(ZERO_ARG);
 		return ;
 	}
+	tmp->info->max_think_time = tmp->info->die_time - tmp->info->eat_time;
+	tmp->info->max_think_time -= tmp->info->sleep_time;
+	if (tmp->info->max_think_time < 0)
+	{
+		clean_philo(*philo);
+		ft_philo_error(NO_THINK_TIME_AVAILABLE);
+		return ;
+	}
+	tmp->waiter = malloc(sizeof(t_waiter));
+	if (tmp->waiter == NULL)
+	{
+		clean_philo(*philo);
+		ft_philo_error(MALLOC_ERROR);
+		return ;
+	}
+	if (pthread_create(&tmp->waiter->waiter, NULL, &waiter_routine, NULL) ||
+		pthread_mutex_init(&tmp->waiter->waiter_mutex, NULL))
+	{
+		clean_philo(*philo);
+		ft_philo_error(PTHREAD_INIT_ERROR);
+		return ;
+	}
 	tmp->forks = malloc(sizeof(t_cutlery) * tmp->info->nb_philos);
 	if (tmp->forks == NULL)
 	{
@@ -67,7 +89,7 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 			}
 			free(tmp->forks);
 			clean_philo(*philo);
-			ft_philo_error(MUTEX_INIT_ERROR);
+			ft_philo_error(PTHREAD_INIT_ERROR);
 			return ;
 		}
 		tmp->forks[i].mutex_init = 1;
@@ -82,6 +104,12 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 	}
 	i = 0;
 	r_args = malloc(sizeof(t_philo_r));
+	if (r_args == NULL)
+	{
+		clean_philo(*philo);
+		ft_philo_error(MALLOC_ERROR);
+		return ;
+	}
 	r_args->info = tmp->info;
 	while (i < (tmp->info->nb_philos))
 	{
@@ -90,9 +118,20 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 		tmp->philos[i].meal_nb = 0;
 		assign_mutex(tmp->info->nb_philos, &tmp->philos[i], tmp->forks);
 		r_args->philo = &tmp->philos[i];
-		pthread_create(&tmp->philos[i].thread, NULL, &philo_routine, (void *) r_args);
+		if (pthread_create(&tmp->philos[i].thread, NULL, &philo_routine, (void *) r_args))
+		{
+			j = 0;
+			while (j < i)
+			{
+				pthread_join(tmp->philos[j].thread, NULL);
+				j++;
+			}
+			free(tmp->philos);
+			clean_philo(*philo);
+			ft_philo_error(PTHREAD_INIT_ERROR);
+		}
 		i++;
-	}
+	}	
 }
 
 static void	assign_mutex(int nb, t_philo *philo, t_cutlery *forks)

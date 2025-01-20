@@ -6,7 +6,7 @@
 #    By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/14 16:28:52 by zslowian          #+#    #+#              #
-#    Updated: 2025/01/19 15:17:36 by zslowian         ###   ########.fr        #
+#    Updated: 2025/01/20 14:43:38 by zslowian         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ SRC = main.c \
 	errors.c \
 	init.c \
 	logs.c \
+	philo_tasks.c \
 	routines.c \
 	utils.c
 
