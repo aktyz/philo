@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 13:47:10 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 15:35:35 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:17:14 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,17 @@
 
 static void	assign_mutex(int nb, t_philo *philo, t_cutlery *forks);
 
-void	init_philo(t_philos ***philo, int argc, char ***argv)
+void	init_philo(t_philos ***philos, int argc, char ***argv)
 {
 	int			i;
 	int			j;
 	t_philos	*tmp;
-	t_philo_r	*r_args;
+	t_philo_r	*r_philo;
+	t_waiter_r	*r_waiter;
 	char		**args;
 
 	(void) argc;
-	tmp = **philo;
+	tmp = **philos;
 	args = *argv;
 	if (args[1])
 		tmp->info->nb_philos = ft_atoi(args[1]);
@@ -47,36 +48,46 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 	}
 	tmp->info->max_think_time = tmp->info->die_time - tmp->info->eat_time;
 	tmp->info->max_think_time -= tmp->info->sleep_time;
+	tmp->info->is_terminated = false;
 	if (tmp->info->max_think_time < 0)
 	{
-		clean_philo(*philo);
+		clean_philo(*philos);
 		ft_philo_error(NO_THINK_TIME_AVAILABLE);
 		return ;
 	}
 	if (pthread_mutex_init(&tmp->info->print, NULL))
 	{
-		clean_philo(*philo);
+		clean_philo(*philos);
 		ft_philo_error(PTHREAD_INIT_ERROR);
 		return ;
 	}
 	tmp->waiter = malloc(sizeof(t_waiter));
 	if (tmp->waiter == NULL)
 	{
-		clean_philo(*philo);
+		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
-	if (pthread_create(&tmp->waiter->waiter, NULL, &waiter_routine, NULL) ||
+	r_waiter = malloc(sizeof(t_waiter_r));
+	if (r_waiter == NULL)
+	{
+		clean_philo(*philos);
+		ft_philo_error(MALLOC_ERROR);
+		return ;
+	}
+	r_waiter->info = tmp->info;
+	r_waiter->philos = tmp->philos;
+	if (pthread_create(&tmp->waiter->waiter, NULL, &waiter_routine, (void *) r_waiter) ||
 		pthread_mutex_init(&tmp->waiter->waiter_mutex, NULL))
 	{
-		clean_philo(*philo);
+		clean_philo(*philos);
 		ft_philo_error(PTHREAD_INIT_ERROR);
 		return ;
 	}
 	tmp->forks = malloc(sizeof(t_cutlery) * tmp->info->nb_philos);
 	if (tmp->forks == NULL)
 	{
-		clean_philo(*philo);
+		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
@@ -94,7 +105,7 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 				j++;
 			}
 			free(tmp->forks);
-			clean_philo(*philo);
+			clean_philo(*philos);
 			ft_philo_error(PTHREAD_INIT_ERROR);
 			return ;
 		}
@@ -104,27 +115,29 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 	tmp->philos = malloc(sizeof(t_philo) * tmp->info->nb_philos);
 	if (tmp->philos == NULL)
 	{
-		clean_philo(*philo);
+		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
 	i = 0;
-	r_args = malloc(sizeof(t_philo_r));
-	if (r_args == NULL)
+	r_philo = malloc(sizeof(t_philo_r));
+	if (r_philo == NULL)
 	{
-		clean_philo(*philo);
+		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
-	r_args->info = tmp->info;
+	r_philo->info = tmp->info;
 	while (i < (tmp->info->nb_philos))
 	{
 		tmp->philos[i].philo_status = THINKING;
 		tmp->philos[i].philo_nb = i + 1;
 		tmp->philos[i].meal_nb = 0;
+		tmp->philos[i].meal_start_time.tv_sec = tmp->info->start_time.tv_sec;
+		tmp->philos[i].meal_start_time.tv_usec = tmp->info->start_time.tv_usec;
 		assign_mutex(tmp->info->nb_philos, &tmp->philos[i], tmp->forks);
-		r_args->philo = &tmp->philos[i];
-		if (pthread_create(&tmp->philos[i].thread, NULL, &philo_routine, (void *) r_args))
+		r_philo->philo = &tmp->philos[i];
+		if (pthread_create(&tmp->philos[i].thread, NULL, &philo_routine, (void *) r_philo))
 		{
 			j = 0;
 			while (j < i)
@@ -133,7 +146,7 @@ void	init_philo(t_philos ***philo, int argc, char ***argv)
 				j++;
 			}
 			free(tmp->philos);
-			clean_philo(*philo);
+			clean_philo(*philos);
 			ft_philo_error(PTHREAD_INIT_ERROR);
 		}
 		i++;

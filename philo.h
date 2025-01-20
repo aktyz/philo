@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 15:49:23 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/20 17:15:52 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@
 # endif
 
 # include <pthread.h>
-# include <stdio.h>    //printf
-# include <stdlib.h>   //malloc, free
-# include <string.h>   //memset
-# include <sys/time.h> //gettimeofday
-# include <unistd.h>   //usleep, write
+# include <stdio.h>		//printf
+# include <stdlib.h>	//malloc, free
+# include <string.h>	//memset
+# include <sys/time.h>	//gettimeofday
+# include <unistd.h>	//usleep, write
+# include <stdbool.h>	//bool
 
 /**
  * Program error types
@@ -64,6 +65,7 @@ typedef struct timeval s_timeval;
 typedef struct s_args
 {
 	int				nb_philos;
+	bool			is_terminated;
 	int				die_time;
 	int				eat_time;
 	int				sleep_time;
@@ -85,6 +87,7 @@ typedef struct s_philo
 	pthread_t		thread;
 	int				philo_nb;
 	int				meal_nb;
+	s_timeval		meal_start_time;
 	t_philo_status	philo_status;
 	t_cutlery		*first_fork;
 	t_cutlery		*second_fork;
@@ -162,7 +165,8 @@ void	philo_think(t_philo *philo, t_args *info);
  */
 typedef struct s_waiter_r
 {
-	
+	t_args		*info;
+	t_philo		*philos;
 }	t_waiter_r;
 
 void	*waiter_routine(void *param);
