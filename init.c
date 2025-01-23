@@ -6,13 +6,13 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 13:47:10 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/23 14:52:17 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/23 20:33:50 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	assign_mutex(int nb, t_philo *philo, t_cutlery *forks);
+static void	assign_mutex(t_philo *philo, pthread_mutex_t *forks);
 
 void	init_philo(t_philos ***philos, int argc, char ***argv)
 {
@@ -27,12 +27,12 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	(void) argc;
 	tmp = **philos;
 	args = *argv;
-	if (pthread_mutex_init(&tmp->info->data_mutex, NULL))
+	if (pthread_mutex_init(&tmp->info->info_mutex, NULL))
 	{
 		ft_philo_error(PTHREAD_INIT_ERROR);
 		return ;
 	}
-	pthread_mutex_lock(&tmp->info->data_mutex);
+	pthread_mutex_lock(&tmp->info->info_mutex);
 	tmp->philos = NULL;
 	tmp->forks = NULL;
 	tmp->waiter = NULL;
@@ -59,9 +59,9 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	if (tmp->info->nb_philos == 1)
 	{
 		sleep(tmp->info->die_time/1000);
-		pthread_mutex_unlock(&tmp->info->data_mutex);
+		pthread_mutex_unlock(&tmp->info->info_mutex);
 		gettimeofday(&time_stamp, NULL);
-		die(convert_to_miliseconds(subtract_timeval(tmp->info->start_time, time_stamp)), 1, &tmp->info->data_mutex);
+		printf("%d %d died\n", convert_to_miliseconds(subtract_timeval(tmp->info->start_time, time_stamp)), 1);
 		return ;
 	}
 	tmp->info->max_think_time = tmp->info->die_time - tmp->info->eat_time;
@@ -72,7 +72,7 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 		ft_philo_error(NO_THINK_TIME_AVAILABLE);
 		return ;
 	}
-	tmp->forks = malloc(sizeof(t_cutlery) * tmp->info->nb_philos);
+	tmp->forks = malloc(sizeof(pthread_mutex_t) * tmp->info->nb_philos);
 	if (tmp->forks == NULL)
 	{
 		ft_philo_error(MALLOC_ERROR);
@@ -81,21 +81,18 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	i = 0;
 	while (i < (tmp->info->nb_philos))
 	{
-		(tmp->forks)[i].fork_status = AVAILABLE;
-		tmp->forks[i].mutex_init = 0;
-		if (pthread_mutex_init(&tmp->forks[i].fork_mutex, NULL) != 0)
+		if (pthread_mutex_init(&tmp->forks[i], NULL) != 0)
 		{
 			j = 0;
 			while (j < i)
 			{
-				pthread_mutex_destroy(&tmp->forks[i].fork_mutex);
+				pthread_mutex_destroy(&tmp->forks[i]);
 				j++;
 			}
 			free(tmp->forks);
 			ft_philo_error(PTHREAD_INIT_ERROR);
 			return ;
 		}
-		tmp->forks[i].mutex_init = 1;
 		i++;
 	}
 	tmp->philos = malloc(sizeof(t_philo) * tmp->info->nb_philos);
@@ -119,7 +116,7 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 		tmp->philos[i].meal_nb = 0;
 		tmp->philos[i].meal_start_time.tv_sec = tmp->info->start_time.tv_sec;
 		tmp->philos[i].meal_start_time.tv_usec = tmp->info->start_time.tv_usec;
-		assign_mutex(tmp->info->nb_philos, &tmp->philos[i], tmp->forks);
+		assign_mutex(&tmp->philos[i], tmp->forks);
 		r_philo->philo = &tmp->philos[i];
 		if (pthread_create(&tmp->philos[i].thread, NULL, &philo_routine, (void *) r_philo))
 		{
@@ -135,12 +132,6 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 		}
 		i++;
 	}
-	tmp->waiter = malloc(sizeof(t_waiter));
-	if (tmp->waiter == NULL)
-	{
-		ft_philo_error(MALLOC_ERROR);
-		return ;
-	}
 	r_waiter = malloc(sizeof(t_waiter_r));
 	if (r_waiter == NULL)
 	{
@@ -149,33 +140,25 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	}
 	r_waiter->info = tmp->info;
 	r_waiter->philos = tmp->philos;
-	if (pthread_create(&tmp->waiter->waiter, NULL, &waiter_routine, (void *) r_waiter) ||
-		pthread_mutex_init(&tmp->waiter->waiter_mutex, NULL))
+	tmp->waiter = malloc(sizeof(pthread_t *));
+	if (pthread_create(tmp->waiter, NULL, &waiter_routine, (void *) r_waiter))
 	{
 		ft_philo_error(PTHREAD_INIT_ERROR);
 		return ;
 	}
-	pthread_mutex_unlock(&tmp->info->data_mutex);
+	pthread_mutex_unlock(&tmp->info->info_mutex);
 }
 
-static void	assign_mutex(int nb, t_philo *philo, t_cutlery *forks)
+static void	assign_mutex(t_philo *philo, pthread_mutex_t *forks)
 {
-	int	philo_i;
-
-	philo_i = philo->philo_nb - 1;
-	if (philo_i == 0)
+	if (philo->philo_nb == 1) // philo[0]
 	{
-		philo->first_fork = &forks[0];
-		philo->second_fork = &forks[nb - 1];
+		philo->first_fork = &forks[0]; //-> 0
+		philo->second_fork = &forks[1]; //-> 1
 	}
-	else if (philo_i % 2 != 0)
+	else if (philo->philo_nb % 2 == 0) // philo[1, 3, ...]
 	{
-		philo->first_fork = &forks[philo_i - 1];
-		philo->second_fork = &forks[philo_i];
-	}
-	else if (philo_i % 2 == 0)
-	{
-		philo->first_fork = &forks[philo_i];
-		philo->second_fork = &forks[philo_i - 1];
+		philo->first_fork = &forks[0]; // -> 0
+		philo->second_fork = &forks[1]; // -> 1
 	}
 }

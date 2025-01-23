@@ -6,13 +6,15 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 19:42:47 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/23 14:13:19 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/23 20:26:52 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 void		*philo_routine(void *param);
+bool		is_nb_meals(t_args **info, t_philo **philo);
+bool		is_starved(t_args **info, t_philo **philo);
 void		*waiter_routine(void *param);
 
 void	*philo_routine(void *param)
@@ -20,36 +22,23 @@ void	*philo_routine(void *param)
 	t_philo_r	*args;
 	t_philo		*philo;
 	t_args		*info;
-	s_timeval	time_stamp;
 	
 	args = (t_philo_r *) param;
 	philo = args->philo;
 	info = args->info;
-	while (philo->philo_status != DEAD || info->is_terminated != true) // TODO: figure out where and how to check the variables in order to end the program in the right place
+	while (!is_starved(&info, &philo) || !is_nb_meals(&info, &philo))
 	{
-		if (info->min_nb_meals && philo->meal_nb == info->min_eat)
-			break ;
 		philo_take_forks(philo, info);
-		gettimeofday(&time_stamp, NULL);
-		if (convert_to_miliseconds(subtract_timeval(time_stamp, philo->meal_start_time))
-			> info->die_time)
+		if (!is_starved(&info, &philo))
 		{
-			philo->philo_status = DEAD;
-			gettimeofday(&time_stamp, NULL);
-			pthread_mutex_lock(&info->data_mutex); // TODO: nothing more will be printed but what about the treads hanging on this lock - how to move them from there
-			die(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->data_mutex);
-			break ;
+			philo_eat(philo, info);
+			philo_put_down_forks(philo);
+			philo->meal_nb++;
+			philo_sleep(philo, info);
+			philo_think(philo, info);
 		}
 		else
-		{
-			philo->meal_start_time.tv_sec = time_stamp.tv_sec;
-			philo->meal_start_time.tv_usec = time_stamp.tv_usec;
-		}
-		philo_eat(philo, info);
-		philo_put_down_forks(philo);
-		philo->meal_nb++;
-		philo_sleep(philo, info);
-		philo_think(philo, info);
+			break;
 	}
 	free(args);
 	return (NULL);
@@ -58,20 +47,51 @@ void	*philo_routine(void *param)
 void	*waiter_routine(void *param)
 {
 	t_waiter_r	*args;
-	int			i;
 
 	args = (t_waiter_r *) param;
 	while (1)
 	{
-		i = 0;
-		while (i < args->info->nb_philos)
-		{
-			if (args->philos[i].philo_status == DEAD)
-			{
-				args->info->is_terminated = true; // TODO: add a mutex on this variable
-			}
-			i++;
-		}
+		pthread_mutex_lock(&args->info->info_mutex);
+		if (args->info->is_terminated)
+			break;
+		pthread_mutex_unlock(&args->info->info_mutex);
 	}
 	return (NULL);
+}
+
+bool	is_nb_meals(t_args **info, t_philo **philo)
+{
+	if ((*info)->min_nb_meals && (*philo)->meal_nb == (*info)->min_eat)
+	{
+		pthread_mutex_lock(&(*info)->info_mutex);
+		(*info)->is_terminated = true;
+		pthread_mutex_unlock(&(*info)->info_mutex);
+		return (1);
+	}
+	else
+		return (0);
+}
+
+bool	is_starved(t_args **info, t_philo **philo)
+{
+	s_timeval	time_stamp;
+	int			difference;
+	bool		is_starved;
+
+	gettimeofday(&time_stamp, NULL);
+	difference = convert_to_miliseconds(subtract_timeval(time_stamp, (*philo)->meal_start_time));
+	is_starved = difference > (*info)->die_time;
+	if (is_starved)
+	{
+		pthread_mutex_lock(&(*info)->info_mutex);
+		(*info)->is_terminated = true;
+		printf("%d %d died\n", difference, (*philo)->philo_nb);
+		return (1);
+	}
+	else
+	{
+		(*philo)->meal_start_time.tv_sec = time_stamp.tv_sec;
+		(*philo)->meal_start_time.tv_usec = time_stamp.tv_usec;
+		return (0);
+	}
 }

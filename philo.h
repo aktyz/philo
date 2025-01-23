@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/23 14:13:19 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/23 20:28:15 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,6 @@ typedef enum e_philo_errors
 	NB_ERRORS
 }	t_philo_errors;
 
-typedef enum e_cutlery_status
-{
-	AVAILABLE,
-	TAKEN,
-	NB_STATUS
-}	t_cutlery_status;
-
 typedef enum e_philo_status
 {
 	EATING,
@@ -73,32 +66,19 @@ typedef struct s_args
 	int				min_eat;
 	int				max_think_time;
 	s_timeval		start_time;
-	pthread_mutex_t	data_mutex;
+	pthread_mutex_t	info_mutex;
 }	t_args;
-
-typedef struct s_cutlery
-{
-	t_cutlery_status	fork_status;// TODO: remove (?)
-	pthread_mutex_t		fork_mutex;
-	int					mutex_init;// TODO: remove (?)
-}	t_cutlery;
 
 typedef struct s_philo
 {
-	pthread_t		thread;
-	int				philo_nb;
-	int				meal_nb;
-	s_timeval		meal_start_time;
-	t_philo_status	philo_status;
-	t_cutlery		*first_fork;
-	t_cutlery		*second_fork;
+	pthread_t			thread;
+	int					philo_nb;
+	int					meal_nb;
+	s_timeval			meal_start_time;
+	t_philo_status		philo_status;
+	pthread_mutex_t		*first_fork;
+	pthread_mutex_t		*second_fork;
 }	t_philo;
-
-typedef struct s_waiter
-{
-	pthread_t		waiter;
-	pthread_mutex_t	waiter_mutex;
-}	t_waiter;
 
 /**
  * Our program structure
@@ -106,10 +86,10 @@ typedef struct s_waiter
  */
 typedef struct s_philos
 {
-	t_args		*info;
-	t_philo		*philos;
-	t_cutlery	*forks;
-	t_waiter	*waiter;
+	t_args			*info;
+	t_philo			*philos;
+	pthread_mutex_t	*forks;
+	pthread_t		*waiter;
 }	t_philos;
 /**
  * Core functions
@@ -134,7 +114,6 @@ void	take_fork(int milisec, int philo, pthread_mutex_t *lock);
 void	eating(int milisec, int philo, pthread_mutex_t *lock);
 void	sleeping(int milisec, int philo, pthread_mutex_t *lock);
 void	thinking(int milisec, int philo, pthread_mutex_t *lock);
-void	die(int milisec, int philo, pthread_mutex_t *lock);
 
 /**
  * Error handling
@@ -170,7 +149,5 @@ typedef struct s_waiter_r
 }	t_waiter_r;
 
 void	*waiter_routine(void *param);
-
-
 
 #endif

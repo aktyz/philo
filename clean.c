@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 15:13:25 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/23 14:47:40 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/23 19:52:05 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	clean_philo(t_philos **philo)
 		i = 0;
 		while (i < (*philo)->info->nb_philos)
 		{
-			pthread_mutex_destroy(&(*philo)->forks[i].fork_mutex);
+			pthread_mutex_destroy(&(*philo)->forks[i]);
 			i++;
 		}
 		free((*philo)->forks);
@@ -39,11 +39,8 @@ void	clean_philo(t_philos **philo)
 	if ((*philo)->info)
 	{
 		if ((*philo)->waiter)
-		{
-			pthread_join((*philo)->waiter->waiter, NULL);
-			pthread_mutex_destroy(&(*philo)->waiter->waiter_mutex);
-		}
-		pthread_mutex_destroy(&(*philo)->info->data_mutex);
+			pthread_join(*(*philo)->waiter, NULL);
+		pthread_mutex_destroy(&(*philo)->info->info_mutex);
 		free((*philo)->info);	
 	}
 	if (*philo)
