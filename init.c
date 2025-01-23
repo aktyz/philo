@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 13:47:10 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 17:39:39 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/23 14:52:17 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,21 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	t_philos	*tmp;
 	t_philo_r	*r_philo;
 	t_waiter_r	*r_waiter;
+	s_timeval	time_stamp;
 	char		**args;
 
 	(void) argc;
 	tmp = **philos;
 	args = *argv;
+	if (pthread_mutex_init(&tmp->info->data_mutex, NULL))
+	{
+		ft_philo_error(PTHREAD_INIT_ERROR);
+		return ;
+	}
+	pthread_mutex_lock(&tmp->info->data_mutex);
+	tmp->philos = NULL;
+	tmp->forks = NULL;
+	tmp->waiter = NULL;
 	if (args[1])
 		tmp->info->nb_philos = ft_atoi(args[1]);
 	if (args[2])
@@ -46,25 +56,25 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 		ft_philo_error(ZERO_ARG);
 		return ;
 	}
+	if (tmp->info->nb_philos == 1)
+	{
+		sleep(tmp->info->die_time/1000);
+		pthread_mutex_unlock(&tmp->info->data_mutex);
+		gettimeofday(&time_stamp, NULL);
+		die(convert_to_miliseconds(subtract_timeval(tmp->info->start_time, time_stamp)), 1, &tmp->info->data_mutex);
+		return ;
+	}
 	tmp->info->max_think_time = tmp->info->die_time - tmp->info->eat_time;
 	tmp->info->max_think_time -= tmp->info->sleep_time;
 	tmp->info->is_terminated = false;
 	if (tmp->info->max_think_time < 0)
 	{
-		clean_philo(*philos);
 		ft_philo_error(NO_THINK_TIME_AVAILABLE);
-		return ;
-	}
-	if (pthread_mutex_init(&tmp->info->print, NULL))
-	{
-		clean_philo(*philos);
-		ft_philo_error(PTHREAD_INIT_ERROR);
 		return ;
 	}
 	tmp->forks = malloc(sizeof(t_cutlery) * tmp->info->nb_philos);
 	if (tmp->forks == NULL)
 	{
-		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
@@ -82,7 +92,6 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 				j++;
 			}
 			free(tmp->forks);
-			clean_philo(*philos);
 			ft_philo_error(PTHREAD_INIT_ERROR);
 			return ;
 		}
@@ -92,7 +101,6 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	tmp->philos = malloc(sizeof(t_philo) * tmp->info->nb_philos);
 	if (tmp->philos == NULL)
 	{
-		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
@@ -100,7 +108,6 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	r_philo = malloc(sizeof(t_philo_r));
 	if (r_philo == NULL)
 	{
-		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
@@ -131,14 +138,12 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	tmp->waiter = malloc(sizeof(t_waiter));
 	if (tmp->waiter == NULL)
 	{
-		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
 	r_waiter = malloc(sizeof(t_waiter_r));
 	if (r_waiter == NULL)
 	{
-		clean_philo(*philos);
 		ft_philo_error(MALLOC_ERROR);
 		return ;
 	}
@@ -147,10 +152,10 @@ void	init_philo(t_philos ***philos, int argc, char ***argv)
 	if (pthread_create(&tmp->waiter->waiter, NULL, &waiter_routine, (void *) r_waiter) ||
 		pthread_mutex_init(&tmp->waiter->waiter_mutex, NULL))
 	{
-		clean_philo(*philos);
 		ft_philo_error(PTHREAD_INIT_ERROR);
 		return ;
 	}
+	pthread_mutex_unlock(&tmp->info->data_mutex);
 }
 
 static void	assign_mutex(int nb, t_philo *philo, t_cutlery *forks)

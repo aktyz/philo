@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 14:41:05 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 15:50:03 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/23 14:13:19 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ void	philo_take_forks(t_philo *philo, t_args *info)
 	pthread_mutex_lock(&philo->first_fork->fork_mutex);
 	philo->first_fork->fork_status = TAKEN;
 	gettimeofday(&time_stamp, NULL);
-	take_fork(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->print); //LOG
+	take_fork(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->data_mutex); //LOG
 	pthread_mutex_lock(&philo->second_fork->fork_mutex);
 	philo->second_fork->fork_status = TAKEN;
 	gettimeofday(&time_stamp, NULL);
-	take_fork(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->print); //LOG
+	take_fork(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->data_mutex); //LOG
 }
 
 void	philo_eat(t_philo *philo, t_args *info)
@@ -38,7 +38,7 @@ void	philo_eat(t_philo *philo, t_args *info)
 
 	philo->philo_status = EATING;
 	gettimeofday(&time_stamp, NULL);
-	eating(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->print); //LOG
+	eating(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->data_mutex); //LOG
 	sleep(info->eat_time/1000);
 }
 
@@ -56,7 +56,7 @@ void	philo_sleep(t_philo *philo, t_args *info)
 
 	philo->philo_status = SLEEPING;
 	gettimeofday(&time_stamp, NULL);
-	sleeping(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->print); //LOG
+	sleeping(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->data_mutex); //LOG
 	sleep(info->sleep_time/1000);
 }
 
@@ -66,6 +66,6 @@ void	philo_think(t_philo *philo, t_args *info)
 
 	philo->philo_status = THINKING;
 	gettimeofday(&time_stamp, NULL);
-	thinking(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->print); //LOG
+	thinking(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->data_mutex); //LOG
 	sleep((info->max_think_time/1000)/10);
 }

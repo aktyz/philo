@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 17:39:25 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/23 14:13:19 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ typedef struct s_args
 	int				min_eat;
 	int				max_think_time;
 	s_timeval		start_time;
-	pthread_mutex_t	print;
+	pthread_mutex_t	data_mutex;
 }	t_args;
 
 typedef struct s_cutlery

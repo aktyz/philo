@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 19:42:47 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/20 19:03:32 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/23 14:13:19 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	*philo_routine(void *param)
 		{
 			philo->philo_status = DEAD;
 			gettimeofday(&time_stamp, NULL);
-			pthread_mutex_lock(&info->print); // TODO: nothing more will be printed but what about the treads hanging on this lock - how to move them from there
-			die(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->print);
+			pthread_mutex_lock(&info->data_mutex); // TODO: nothing more will be printed but what about the treads hanging on this lock - how to move them from there
+			die(convert_to_miliseconds(subtract_timeval(info->start_time, time_stamp)), philo->philo_nb, &info->data_mutex);
 			break ;
 		}
 		else
