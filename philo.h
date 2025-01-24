@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 17:33:39 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/23 20:28:15 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/24 22:05:45 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,20 +65,33 @@ typedef struct s_args
 	bool			min_nb_meals;
 	int				min_eat;
 	int				max_think_time;
-	s_timeval		start_time;
+	s_timeval		program_start_time;
 	pthread_mutex_t	info_mutex;
 }	t_args;
 
 typedef struct s_philo
 {
-	pthread_t			thread;
+	pthread_mutex_t		philo_lock;
+	t_philo_status		philo_status;
 	int					philo_nb;
 	int					meal_nb;
+	int					die_time;
+	int					eat_time;
+	int					sleep_time;
+	int					max_think_time;
 	s_timeval			meal_start_time;
-	t_philo_status		philo_status;
 	pthread_mutex_t		*first_fork;
 	pthread_mutex_t		*second_fork;
+	pthread_t			thread;
+
 }	t_philo;
+
+typedef struct s_philo_r // struct passed to philo threads
+{
+	pthread_mutex_t	philo_lock;
+	t_args			*info;
+	t_philo			*philo;
+}	t_philo_r;
 
 /**
  * Our program structure
@@ -87,15 +100,14 @@ typedef struct s_philo
 typedef struct s_philos
 {
 	t_args			*info;
-	t_philo			*philos;
 	pthread_mutex_t	*forks;
-	pthread_t		*waiter;
+	t_philo_r		*philos; // this array passed to monitor thread
 }	t_philos;
 /**
  * Core functions
- * 
+ *
  */
-void	init_philo(t_philos ***philo, int argc, char ***argv);
+void	init_philo(t_philos ***philo, char ***argv);
 void	clean_philo(t_philos **philo);
 
 /**
@@ -125,29 +137,15 @@ void	ft_philo_error(t_philo_errors e_nb);
  * Threads routines - philosopher
  *
  */
-typedef struct s_philo_r
-{
-	t_args	*info;
-	t_philo	*philo;
-}	t_philo_r;
-
 void	*philo_routine(void *param);
-void	philo_take_forks(t_philo *philo, t_args *info);
-void	philo_eat(t_philo *philo, t_args *info);
+void	philo_take_forks(t_philo *philo, s_timeval start,
+	pthread_mutex_t *lock);
+void	philo_eat(t_philo *philo,  s_timeval start, pthread_mutex_t *lock,
+	unsigned int eat_time);
 void	philo_put_down_forks(t_philo *philo);
-void	philo_sleep(t_philo *philo, t_args *info);
-void	philo_think(t_philo *philo, t_args *info);
-
-/**
- * Threads routines - waiter
- *
- */
-typedef struct s_waiter_r
-{
-	t_args		*info;
-	t_philo		*philos;
-}	t_waiter_r;
-
-void	*waiter_routine(void *param);
+void	philo_sleep(t_philo *philo,  s_timeval start, pthread_mutex_t *lock,
+	unsigned int sleep_time);
+void	philo_think(t_philo *philo,  s_timeval start, pthread_mutex_t *lock,
+	unsigned int max_think_time);
 
 #endif
