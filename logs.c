@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 14:08:46 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/23 20:27:12 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/25 21:43:12 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,28 +19,32 @@ void	thinking(int milisec, int philo, pthread_mutex_t *lock);
 
 void	take_fork(int milisec, int philo, pthread_mutex_t *lock)
 {
-	pthread_mutex_lock(lock);
+	(void) lock;
+	//pthread_mutex_lock(lock);
 	printf("%d %d has taken a fork\n", milisec, philo);
-	pthread_mutex_unlock(lock);
+	//pthread_mutex_unlock(lock);
 }
 
 void	eating(int milisec, int philo, pthread_mutex_t *lock)
 {
-	pthread_mutex_lock(lock);
+	(void) lock;
+	//pthread_mutex_lock(lock);
 	printf("%d %d is eating\n", milisec, philo);
-	pthread_mutex_unlock(lock);
+	//pthread_mutex_unlock(lock);
 }
 
 void	sleeping(int milisec, int philo, pthread_mutex_t *lock)
 {
-	pthread_mutex_lock(lock);
+	(void) lock;
+	//pthread_mutex_lock(lock);
 	printf("%d %d is sleeping\n", milisec, philo);
-	pthread_mutex_unlock(lock);
+	//pthread_mutex_unlock(lock);
 }
 
 void	thinking(int milisec, int philo, pthread_mutex_t *lock)
 {
-	pthread_mutex_lock(lock);
+	(void) lock;
+	//pthread_mutex_lock(lock);
 	printf("%d %d is thinking\n", milisec, philo);
-	pthread_mutex_unlock(lock);
+	//pthread_mutex_unlock(lock);
 }

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 13:47:10 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/24 22:22:22 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/01/25 21:21:52 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	init_philo(t_philos ***philos, char ***argv)
 		ft_philo_error(ZERO_ARG);
 		return ;
 	}
+	gettimeofday(&data->info->program_start_time, NULL);
 	if (data->info->nb_philos == 1)
 	{
 		sleep(data->info->die_time/1000);
