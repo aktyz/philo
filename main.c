@@ -1,53 +1,21 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/02 17:33:54 by zslowian          #+#    #+#             */
-/*   Updated: 2025/01/24 22:08:20 by zslowian         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "philo.h"
 
-static void	launch_philo(t_philos **philo, int argc, char ***argv);
 static void	how_to_run(void);
 
-int	main(int argc, char **argv)
+int	main (int argc, char *argv[])
 {
-	t_philos	*philo;
+	t_data	data;
 
-	if (argc == 5 || argc == 6)
+	if (argc > 4 && argc < 7)
 	{
-		philo = malloc(sizeof(t_philos));
-		if (philo == NULL)
-			ft_philo_error(MALLOC_ERROR);
-		launch_philo(&philo, argc, &argv);
+		parse_input(&data, argv);
+		data_init(&data);
+		dinner_start(&data);
+		clean(&data);
 	}
 	else
-	{
 		how_to_run();
-		return (1);
-	}
 	return (0);
-}
-
-static void	launch_philo(t_philos **philo, int argc, char ***argv)
-{
-	(void) argc;
-	(*philo)->info = malloc(sizeof(t_args));
-	if ((*philo)->info == NULL)
-	{
-		clean_philo(philo);
-		ft_philo_error(MALLOC_ERROR);
-	}
-	gettimeofday(&(*philo)->info->program_start_time, NULL);
-	(*philo)->info->min_nb_meals = false;
-	// init_info(&philo, argc, argv);
-	init_philo(&philo, argv);
-	clean_philo(philo);
 }
 
 static void	how_to_run(void)
