@@ -63,13 +63,15 @@ typedef struct s_philo
  */
 struct s_data
 {
-	long	nb_philos;
-	long	die_time;
-	long	eat_time;
-	long	sleep_time;
-	long	min_eat;
-	long	start_time;
-	bool	is_end;
+	long			nb_philos;
+	long			die_time;
+	long			eat_time;
+	long			sleep_time;
+	long			min_eat;
+	long			start_time;
+	bool			is_end;
+	bool			are_threads_ready;
+	pthread_mutex_t	data_mutex;
 	t_fork	*forks;
 	t_philo	*philos;
 };
@@ -77,7 +79,14 @@ struct s_data
 
 void	parse_input(t_data *data, char *argv[]);
 void	data_init(t_data *data);
-void	ft_philo_error(t_philo_errors e_nb);
-void	*ft_malloc(size_t bytes);
+void	ft_philo_error(t_philo_errors e_nb, t_data *data);
+void	*ft_malloc(size_t bytes, t_data *data);
+void	dinner_start(t_data *data);
+
+void	set_bool(pthread_mutex_t *lock, bool *v, bool new_v);
+bool	get_bool(pthread_mutex_t *lock, bool *v);
+void	set_long(pthread_mutex_t *lock, long *v, long new_v);
+long	get_long(pthread_mutex_t *lock, long *v);
+bool	is_dinner_finished(t_data *data);
 
 #endif

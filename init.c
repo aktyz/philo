@@ -9,8 +9,10 @@ void	data_init(t_data *data)
 
 	i = -1;
 	data->is_end = false;
-	data->philos = ft_malloc(data->nb_philos * sizeof(t_philo));
-	data->forks = ft_malloc(data->nb_philos * sizeof(t_fork));
+	data->are_threads_ready = false;
+	data->philos = ft_malloc(data->nb_philos * sizeof(t_philo), data);
+	data->forks = ft_malloc(data->nb_philos * sizeof(t_fork), data);
+	pthread_mutex_init(&data->data_mutex, NULL);
 	while (++i < data->nb_philos)
 	{
 		pthread_mutex_init(&data->forks[i].fork, NULL);

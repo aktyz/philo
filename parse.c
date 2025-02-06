@@ -1,23 +1,23 @@
 #include "philo.h"
 
-static long			ft_atol(const char *str);
+static long			ft_atol(const char *str, t_data *data);
 static const char	*valid_input(const char *str);
 static inline bool	is_space(char c);
 static inline bool	is_digit(char c);
 
 void	parse_input(t_data *data, char *argv[])
 {
-	data->nb_philos = ft_atol(argv[1]);
-	data->die_time = ft_atol(argv[2]) * 1e3;
-	data->eat_time = ft_atol(argv[3]) * 1e3;
-	data->sleep_time = ft_atol(argv[4]) * 1e3;
+	data->nb_philos = ft_atol(argv[1], data);
+	data->die_time = ft_atol(argv[2], data) * 1e3;
+	data->eat_time = ft_atol(argv[3], data) * 1e3;
+	data->sleep_time = ft_atol(argv[4], data) * 1e3;
 	if (argv[5])
-		data->min_eat = ft_atol(argv[5]);
+		data->min_eat = ft_atol(argv[5], data);
 	else
 		data->min_eat = -1;
 }
 
-static long	ft_atol(const char *str)
+static long	ft_atol(const char *str, t_data *data)
 {
 	long	result;
 
@@ -25,8 +25,8 @@ static long	ft_atol(const char *str)
 	str = valid_input(str);
 	while (is_digit(*str))
 		result = (result * 10) + (*str - 48);
-	if (result > INT_MAX)
-		ft_philo_error(ATOI_ERROR);
+	if (result > MAX_INT)
+		ft_philo_error(ATOI_ERROR, data);
 	return (result);
 }
 
