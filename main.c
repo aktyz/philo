@@ -1,8 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/07 16:59:07 by zslowian          #+#    #+#             */
+/*   Updated: 2025/02/07 17:00:20 by zslowian         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-static void	how_to_run(void);
-
-int	main (int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
 	t_data	data;
 
@@ -14,16 +24,6 @@ int	main (int argc, char *argv[])
 		clean(&data);
 	}
 	else
-		how_to_run();
+		how_to_run(&data);
 	return (0);
-}
-
-static void	how_to_run(void)
-{
-	printf("Incorrect number of arguments!\n");
-	printf("Provide four or five arguments:\n");
-	printf("nb_of_philosophers\ttime_to_die\ttime_to_eat\ttime_to_sleep\n");
-	printf("\nOptional fifth argument:\n");
-	printf("nb_of_times_each_philosopher_must_eat\n");
-	ft_philo_error(INCORRECT_NB_ARGS);
 }

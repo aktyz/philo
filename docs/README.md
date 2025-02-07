@@ -16,6 +16,10 @@ p[4]: f[4], f[3]<br><br>
 >	- ```time_to_die``` miliseconds since the beggining of the simulation<br>
 > <b>THEY DIE<b><br>
 
+- [x] half an hour for philo
+- [ ] half an hour for chatGPT - timeline with preparations for Nvidia interview
+- [ ] half an hour for my AIagent aplying to jobs
+
 # Nice README.md
 Time to learn creating proper README files... Once the project is done...
 

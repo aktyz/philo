@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
+/*   Updated: 2025/02/07 16:59:59 by zslowian         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static void	philo_init(t_data *data);
-static void	assign_forks(t_philo *philo, t_fork	*forks, int i);
+static void	assign_forks(t_philo *philo, t_fork *forks, int i);
 
 void	data_init(t_data *data)
 {
@@ -38,7 +50,7 @@ static void	philo_init(t_data *data)
 	}
 }
 
-static void	assign_forks(t_philo *philo, t_fork	*forks, int pos)
+static void	assign_forks(t_philo *philo, t_fork *forks, int pos)
 {
 	int	philo_nb;
 
