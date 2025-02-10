@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/07 16:59:59 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:18:54 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static void	philo_init(t_data *data)
 		philo->full = false;
 		philo->meals_count = 0;
 		philo->data = data;
+		pthread_mutex_init(&philo->philo_mutex, NULL);
 		assign_forks(philo, data->forks, i);
 	}
 }

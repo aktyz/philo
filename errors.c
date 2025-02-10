@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 18:28:57 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/07 16:59:44 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:28:40 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ const char	*g_philo_error_messages[NB_ERRORS] = {
 
 void	ft_philo_error(t_philo_errors e_nb, t_data *data)
 {
-	set_bool(&data->data_mutex, data->is_end, true);
+	set_bool(&data->data_mutex, &data->is_end, true);
 	if (e_nb < 0 || e_nb >= NB_ERRORS)
 	{
 		printf("Unknown error!\n");

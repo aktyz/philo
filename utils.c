@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:51 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/07 16:58:53 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:41:03 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	*ft_malloc(size_t bytes, t_data *data);
 long	ft_get_time(t_time_code time_code, t_data *data);
+void	ft_usleep(long usec, t_data *data);
 
 /**
  * Wrapper around malloc function with a check if malloc
@@ -48,5 +49,32 @@ long	ft_get_time(t_time_code time_code, t_data *data)
 	if (time_code == MICROSEC)
 		return ((tv.tv_sec * 1e6) + (tv.tv_usec));
 	ft_philo_error(TIME_ISSUE, data);
-	return (NULL);
+	return (-1);
+}
+
+/**
+ * Precise usleep
+ *
+ */
+void	ft_usleep(long usec, t_data *data)
+{
+	long	start;
+	long	elapsed;
+	long	remaining;
+
+	start = ft_get_time(MICROSEC, data);
+	while (ft_get_time(MICROSEC, data) - start < usec)
+	{
+		if (is_dinner_finished(data))
+			break;
+		elapsed = ft_get_time(MICROSEC, data) - start;
+		remaining = usec - elapsed;
+		if (remaining > 1e3)
+			usleep(remaining / 2);
+		else
+		{
+			while (ft_get_time(MICROSEC, data) - start < usec)
+				;
+		}
+	}
 }

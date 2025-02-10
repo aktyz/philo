@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:41 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/07 17:01:59 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:47:22 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ static long	ft_atol(const char *str, t_data *data)
 	result = 0;
 	str = valid_input(str, data);
 	while (is_digit(*str))
+	{
 		result = (result * 10) + (*str - 48);
+		str++;
+	}
 	if (result > MAX_INT)
 		ft_philo_error(ATOI_ERROR, data);
 	return (result);

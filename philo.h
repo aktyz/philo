@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/07 17:03:28 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:17:12 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 # define PHILO_H
 
 # include <pthread.h>
-# include <stdbool.h> //bool
-# include <stdio.h> //printf
-# include <stdlib.h> //malloc, free
-# include <string.h> //memset
+# include <stdbool.h>  //bool
+# include <stdio.h>    //printf
+# include <stdlib.h>   //malloc, free
+# include <string.h>   //memset
 # include <sys/time.h> //gettimeofday
-# include <unistd.h> //usleep, write
+# include <unistd.h>   //usleep, write
 
 # ifndef MAX_INT
 #  define MAX_INT 2147483647
@@ -55,6 +55,15 @@ typedef enum e_time_code
 	MICROSEC
 }						t_time_code;
 
+typedef enum e_log
+{
+	TAKE_FORK,
+	EAT,
+	SLEEP,
+	THINK,
+	DIE
+}						t_log;
+
 /**
  * My structure to keep a fork
  *
@@ -71,14 +80,15 @@ typedef struct s_fork
  */
 typedef struct s_philo
 {
-	int			id;
-	long		meals_count;
-	bool		full;
-	long		last_meal_time; // time passed from last meal
-	t_fork		*first_fork;
-	t_fork		*second_fork;
-	t_data		*data;
-	pthread_t	thread_id;
+	int					id;
+	long				meals_count;
+	bool				full;
+	long 				last_meal_time; // time passed from last meal
+	t_fork				*first_fork;
+	t_fork				*second_fork;
+	t_data				*data;
+	pthread_t			thread_id;
+	pthread_mutex_t		philo_mutex;
 }						t_philo;
 
 /**
@@ -87,17 +97,18 @@ typedef struct s_philo
  */
 struct					s_data
 {
-	long			nb_philos;
-	long			die_time;
-	long			eat_time;
-	long			sleep_time;
-	long			min_eat;
-	long			start_time;
-	bool			is_end;
-	bool			are_threads_ready;
-	pthread_mutex_t	data_mutex;
-	t_fork			*forks;
-	t_philo			*philos;
+	long				nb_philos;
+	long				die_time;
+	long				eat_time;
+	long				sleep_time;
+	long				min_eat;
+	long				start_time;
+	bool				is_end;
+	bool				are_threads_ready;
+	pthread_mutex_t		data_mutex;
+	pthread_mutex_t		log_mutex;
+	t_fork				*forks;
+	t_philo				*philos;
 };
 
 /**
@@ -107,6 +118,7 @@ struct					s_data
 void					parse_input(t_data *data, char *argv[]);
 void					data_init(t_data *data);
 void					dinner_start(t_data *data);
+void					log_status(t_log status, t_philo *philo);
 
 /**
  * Error management functions
@@ -132,5 +144,6 @@ void					set_long(pthread_mutex_t *lock, long *v, long new_v);
 long					get_long(pthread_mutex_t *lock, long *v);
 bool					is_dinner_finished(t_data *data);
 void					all_threads_ready(t_data *data);
+void					ft_usleep(long usec, t_data *data);
 
 #endif

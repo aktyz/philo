@@ -6,20 +6,23 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/07 17:01:28 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/10 19:40:16 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 static void	*philo_task(void *data);
-static void	one_philo(t_data *data);
+static void one_philo(t_data *data);
+static void	eat(t_philo *philo);
+static void think(t_philo *philo);
 
 void	dinner_start(t_data *data)
 {
 	int	i;
 
 	i = -1;
+	data->start_time = ft_get_time(MILISEC, data);
 	if (data->min_eat == 0)
 		return ;
 	else if (data->nb_philos == 1)
@@ -27,14 +30,14 @@ void	dinner_start(t_data *data)
 	else
 	{
 		while (++i < data->nb_philos)
-			pthread_create(&data->philos[i].thread_id, philo_task,
-				&data->philos[i], NULL);
+			pthread_create(&data->philos[i].thread_id, NULL, philo_task,
+				&data->philos[i]);
+		set_bool(&data->data_mutex, &data->are_threads_ready, true);
 	}
-	data->start_time = ft_get_time(MILISEC, data);
-	set_bool(&data->data_mutex, data->are_threads_ready, true);
 	i = -1;
 	while (++i < data->nb_philos)
-		pthread_join(&data->philos[i].thread_id, NULL);
+		pthread_join(data->philos[i].thread_id, NULL);
+	
 }
 
 static void	*philo_task(void *data)
@@ -43,10 +46,43 @@ static void	*philo_task(void *data)
 
 	philo = (t_philo *)data;
 	all_threads_ready(philo->data);
-	// TODO
+	while (!is_dinner_finished(data))
+	{
+		if (philo->full)
+			break;
+		eat(philo);
+		log_status(SLEEP, philo);
+		ft_usleep(philo->data->sleep_time, philo->data);
+		think(philo);
+	}
+	return (NULL);
 }
 
-static void	one_philo(t_data *data)
+static void	eat(t_philo *philo)
 {
-	// TODO
+	pthread_mutex_lock(&philo->first_fork->fork);
+	log_status(TAKE_FORK, philo);
+	pthread_mutex_lock(&philo->second_fork->fork);
+	log_status(TAKE_FORK, philo);
+	set_long(&philo->philo_mutex, &philo->last_meal_time,
+			ft_get_time(MILISEC, philo->data));
+	philo->meals_count++;
+	log_status(EAT, philo);
+	ft_usleep(philo->data->eat_time, philo->data);
+	if (philo->data->min_eat > 0
+			&& philo->meals_count == philo->data->min_eat)
+		set_bool(&philo->philo_mutex, &philo->full, true);
+	pthread_mutex_unlock(&philo->first_fork->fork);
+	pthread_mutex_unlock(&philo->second_fork->fork);
+}
+
+static void think(t_philo *philo)
+{
+	log_status(THINK, philo);
+}
+
+static void one_philo(t_data *data)
+{
+	log_status(TAKE_FORK, data->philos);
+	log_status(DIE, data->philos);
 }

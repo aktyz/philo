@@ -6,7 +6,7 @@
 #    By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/14 16:28:52 by zslowian          #+#    #+#              #
-#    Updated: 2025/01/20 14:43:38 by zslowian         ###   ########.fr        #
+#    Updated: 2025/02/10 19:43:29 by zslowian         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,13 +15,14 @@ FLAGS = -Wall -Wextra -Werror
 RM = rm -f
 CC = cc
 
-SRC = main.c \
-	clean.c \
-	errors.c \
+SRC = errors.c \
+	get_set.c \
 	init.c \
 	logs.c \
-	philo_tasks.c \
-	routines.c \
+	main.c \
+	parse.c \
+	start.c \
+	sync.c \
 	utils.c
 
 OBJ = $(SRC:.c=.o)
