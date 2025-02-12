@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:07 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/10 19:31:44 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 18:08:21 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ int	main(int argc, char *argv[])
 		//clean(&data);
 	}
 	else
+	{
+		test_all();
 		how_to_run(&data);
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/12 14:51:32 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 18:03:31 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	*philo_task(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	if (compare_long(philo->data, &philo->data->nb_philos, &philo->data->nb_philos_full)) // debug this function (TESTS?)
+	if (is_v1_equal_v2(&philo->data->data_mutex, &philo->data->nb_philos, &philo->data->nb_philos_full)) // debug this function (TESTS?)
 	{
 		while (!is_dinner_finished(philo->data)) // shouldn't this be in monitor thread
 		{

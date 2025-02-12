@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/12 14:27:10 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 18:09:23 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,13 @@ long					get_long(pthread_mutex_t *lock, long *v);
 bool					is_dinner_finished(t_data *data);
 void					ft_usleep(long usec, t_data *data);
 void					increment_long(pthread_mutex_t *lock, long *v);
-bool					compare_long(t_data *data, long *v1, long *v2);
+bool					is_v1_equal_v2(pthread_mutex_t *lock, long *v1, long *v2);
+
+/**
+ * Testing functions
+ *
+ */
+void	test_all(void);
+void	test_is_v1_equal_v2(void);
 
 #endif
