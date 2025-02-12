@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/10 19:18:54 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 14:38:39 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,11 @@ void	data_init(t_data *data)
 	int	i;
 
 	i = -1;
-	data->is_end = false;
-	data->are_threads_ready = false;
+	data->is_anyone_dead = false;
 	data->philos = ft_malloc(data->nb_philos * sizeof(t_philo), data);
 	data->forks = ft_malloc(data->nb_philos * sizeof(t_fork), data);
+	data->nb_philos_full = 0;
+	data->nb_threads_ready = 0;
 	pthread_mutex_init(&data->data_mutex, NULL);
 	while (++i < data->nb_philos)
 	{
@@ -46,7 +47,6 @@ static void	philo_init(t_data *data)
 		philo->full = false;
 		philo->meals_count = 0;
 		philo->data = data;
-		pthread_mutex_init(&philo->philo_mutex, NULL);
 		assign_forks(philo, data->forks, i);
 	}
 }

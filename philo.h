@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/10 19:17:12 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 14:27:10 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ typedef struct s_philo
 	t_fork				*second_fork;
 	t_data				*data;
 	pthread_t			thread_id;
-	pthread_mutex_t		philo_mutex;
 }						t_philo;
 
 /**
@@ -102,9 +101,10 @@ struct					s_data
 	long				eat_time;
 	long				sleep_time;
 	long				min_eat;
+	long				nb_philos_full;
 	long				start_time;
-	bool				is_end;
-	bool				are_threads_ready;
+	long				nb_threads_ready;
+	bool				is_anyone_dead;
 	pthread_mutex_t		data_mutex;
 	pthread_mutex_t		log_mutex;
 	t_fork				*forks;
@@ -143,7 +143,8 @@ bool					get_bool(pthread_mutex_t *lock, bool *v);
 void					set_long(pthread_mutex_t *lock, long *v, long new_v);
 long					get_long(pthread_mutex_t *lock, long *v);
 bool					is_dinner_finished(t_data *data);
-void					all_threads_ready(t_data *data);
 void					ft_usleep(long usec, t_data *data);
+void					increment_long(pthread_mutex_t *lock, long *v);
+bool					compare_long(t_data *data, long *v1, long *v2);
 
 #endif

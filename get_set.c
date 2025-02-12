@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 17:00:09 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/10 19:30:05 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 14:25:45 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ long	get_long(pthread_mutex_t *lock, long *v)
 	return (result);
 }
 
-bool	is_dinner_finished(t_data *data)
+bool	is_dinner_finished(t_data *data) // shouldn't it be in monitor instead
 {
-	return (get_bool(&data->data_mutex, &data->is_end));
+	return (get_bool(&data->data_mutex, &data->is_anyone_dead));
 }

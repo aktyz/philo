@@ -16,6 +16,11 @@ p[4]: f[4], f[3]<br><br>
 >	- ```time_to_die``` miliseconds since the beggining of the simulation<br>
 > <b>THEY DIE<b><br>
 
+# Notatki gdyby Antoni mial mi evaluacje robic
+- usun flagi debuga z Makefila
+- uzywa make re w czasie evaluacji
+
+
 # Nice README.md
 Time to learn creating proper README files... Once the project is done...
 
