@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/12 18:26:41 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 22:06:35 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	dinner_start(t_data *data)
 		one_philo(data);
 	else
 	{
+		pthread_mutex_lock(&data->start);
 		while (++i < data->nb_philos)
 		{
 			pthread_create(&data->philos[i].thread_id, NULL, philo_task,
@@ -36,11 +37,12 @@ void	dinner_start(t_data *data)
 			printf("%d philo thread created\n", i + 1);
 			increment_long(&data->data_mutex, &data->nb_threads_ready);
 		}
+		pthread_mutex_unlock(&data->start);
 	}
 	i = -1;
 	while (++i < data->nb_philos)
 		pthread_join(data->philos[i].thread_id, NULL);
-	
+
 }
 
 static void	*philo_task(void *data)
@@ -48,8 +50,8 @@ static void	*philo_task(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	while (!is_v1_equal_v2(&philo->data->data_mutex, &philo->data->nb_philos, &philo->data->nb_philos_full))
-		;
+	pthread_mutex_lock(&philo->data->start);
+	pthread_mutex_unlock(&philo->data->start);
 	while (!is_dinner_finished(philo->data)) // shouldn't this be in monitor thread
 	{
 		if (philo->full)

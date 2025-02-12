@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/12 14:38:39 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 22:05:26 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	data_init(t_data *data)
 	data->nb_philos_full = 0;
 	data->nb_threads_ready = 0;
 	pthread_mutex_init(&data->data_mutex, NULL);
+	pthread_mutex_init(&data->log_mutex, NULL);
+	pthread_mutex_init(&data->start, NULL);
 	while (++i < data->nb_philos)
 	{
 		pthread_mutex_init(&data->forks[i].fork, NULL);

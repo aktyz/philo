@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/12 18:09:23 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/12 22:06:53 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ struct					s_data
 	bool				is_anyone_dead;
 	pthread_mutex_t		data_mutex;
 	pthread_mutex_t		log_mutex;
+	pthread_mutex_t		start;
 	t_fork				*forks;
 	t_philo				*philos;
 };
