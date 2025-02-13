@@ -6,16 +6,17 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:41 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/10 19:47:22 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/13 21:55:57 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void				parse_input(t_data *data, char *argv[]);
 static long			ft_atol(const char *str, t_data *data);
 static const char	*valid_input(const char *str, t_data *data);
-static inline bool		is_space(char c);
-static inline bool		is_digit(char c);
+static inline bool	is_space(char c);
+static inline bool	is_digit(char c);
 
 void	parse_input(t_data *data, char *argv[])
 {

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/12 22:06:53 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/13 21:21:46 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ void					parse_input(t_data *data, char *argv[]);
 void					data_init(t_data *data);
 void					dinner_start(t_data *data);
 void					log_status(t_log status, t_philo *philo);
+void					*philo_task(void *data);
 
 /**
  * Error management functions
@@ -147,12 +148,16 @@ bool					is_dinner_finished(t_data *data);
 void					ft_usleep(long usec, t_data *data);
 void					increment_long(pthread_mutex_t *lock, long *v);
 bool					is_v1_equal_v2(pthread_mutex_t *lock, long *v1, long *v2);
+void					wait_on_mutex(pthread_mutex_t *lock);
+void					create_philo_threads(t_data *data);
+bool					is_starved(t_philo *philo);
+void					set_start_time(t_data *data);
 
 /**
  * Testing functions
  *
  */
-void	test_all(void);
-void	test_is_v1_equal_v2(void);
+void					test_all(void);
+void					test_is_v1_equal_v2(void);
 
 #endif

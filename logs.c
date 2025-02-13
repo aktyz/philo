@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 14:08:46 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/10 19:31:16 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/13 21:55:27 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,34 +19,30 @@ static inline void	thinking(long time, int philo);
 
 void	log_status(t_log status, t_philo *philo)
 {
-	long	elapsed;
-
-	elapsed = ft_get_time(MILISEC, philo->data) - philo->data->start_time;
-	if (philo->full)
+	long		elapsed;
+	static bool	is_log_off;
+	
+	elapsed = ft_get_time(MICROSEC, philo->data) - philo->data->start_time;
+	elapsed = elapsed / 1e3;
+	if (philo->full) // TODO: in which cases do we need it
 		return ;
 	pthread_mutex_lock(&philo->data->log_mutex);
-	if (!is_dinner_finished(philo->data))
+	if(!is_log_off)
 	{
-		switch (status)
+		if (status == TAKE_FORK)
+			take_fork(elapsed, philo->id);
+		else if (status == EAT)
+			eating(elapsed, philo->id);
+		else if (status == SLEEP)
+			sleeping(elapsed, philo->id);
+		else if (status == THINK)
+			thinking(elapsed, philo->id);
+		else if (status == DIE)
 		{
-			case TAKE_FORK:
-				take_fork(elapsed, philo->id);
-				break;
-			case EAT:
-				eating(elapsed, philo->id);
-				break;
-			case SLEEP:
-				sleeping(elapsed, philo->id);
-				break;
-			case THINK:
-				thinking(elapsed, philo->id);
-				break;
-			default:
-				break;
+			is_log_off = true;
+			printf("%-6ld %d died\n", elapsed, philo->id);
 		}
 	}
-	if (status == DIE)
-		printf("%-6ld %d died\n", elapsed, philo->id);
 	pthread_mutex_unlock(&philo->data->log_mutex);
 }
 

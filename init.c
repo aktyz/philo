@@ -6,12 +6,13 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/12 22:05:26 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/13 21:13:23 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void		data_init(t_data *data);
 static void	philo_init(t_data *data);
 static void	assign_forks(t_philo *philo, t_fork *forks, int i);
 

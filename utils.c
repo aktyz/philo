@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:51 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/10 19:41:03 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/13 21:48:44 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	*ft_malloc(size_t bytes, t_data *data);
 long	ft_get_time(t_time_code time_code, t_data *data);
 void	ft_usleep(long usec, t_data *data);
+bool	is_starved(t_philo *philo);
 
 /**
  * Wrapper around malloc function with a check if malloc
@@ -77,4 +78,24 @@ void	ft_usleep(long usec, t_data *data)
 				;
 		}
 	}
+}
+/**
+ * Function returning true if philosopher waited too long for
+ * his meal and is dying.
+ * 
+ * Returining false if philo is good to go for another round
+ *
+ */
+bool	is_starved(t_philo *philo)
+{
+	long	elapsed;
+
+	elapsed = ft_get_time(MICROSEC, philo->data) - philo->last_meal_time;
+	if (elapsed >= (philo->data->die_time))
+	{
+		set_bool(&philo->data->data_mutex, &philo->data->is_anyone_dead, true);
+		return (true);
+	}
+	else
+		return (false);
 }
