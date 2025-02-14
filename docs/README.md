@@ -21,7 +21,6 @@ p[4]: f[4], f[3]<br><br>
 - uzywa make re w czasie evaluacji
 - uporzadkowac jednostki czasu
 - clean() (check with valgrind)
-- philo should not die - potentially add some minimal thinking time for each
 
 # Nice README.md
 Time to learn creating proper README files... Once the project is done...

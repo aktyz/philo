@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 15:07:32 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 16:11:34 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,12 +98,16 @@ static void	ft_philo_eat(t_philo *philo)
 }
 
 /**
- * Function used by each philo to think, which is just announcing it
+ * Function used by each philo to think, which is
+ * - announcing it
+ * - thinking for a very small amount of time so that hungrier philo can
+ * pick up the forks
  *
  */
 static void	ft_philo_think(t_philo *philo)
 {
 	ft_philo_log(THINK, philo);
+	ft_usleep(philo->data->max_think_time / 100, philo->data);
 }
 
 /**

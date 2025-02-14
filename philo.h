@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 15:23:16 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 16:12:03 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ typedef struct s_philo
 	int					id;
 	long				meals_count;
 	bool				full;
-	long				last_meal_time; // time passed from last meal
+	long				last_meal_time;
 	t_fork				*first_fork;
 	t_fork				*second_fork;
 	t_data				*data;
@@ -100,6 +100,7 @@ struct					s_data
 	long				die_time;
 	long				eat_time;
 	long				sleep_time;
+	long				max_think_time;
 	long				min_eat;
 	long				nb_philos_full;
 	long				start_time;

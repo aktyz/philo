@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:41 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 14:55:00 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 16:01:02 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	ft_philo_parse(t_data *data, char *argv[])
 	data->die_time = ft_philo_atol(argv[2], data) * 1e3;
 	data->eat_time = ft_philo_atol(argv[3], data) * 1e3;
 	data->sleep_time = ft_philo_atol(argv[4], data) * 1e3;
+	data->max_think_time = data->die_time - data->eat_time;
+	data->max_think_time -= data->sleep_time;
 	if (argv[5])
 		data->min_eat = ft_philo_atol(argv[5], data);
 	else
