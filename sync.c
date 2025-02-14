@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:31 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/13 21:57:48 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 13:47:42 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ bool	is_v1_equal_v2(pthread_mutex_t *lock, long *v1, long *v2)
 {
 	long	a;
 	long	b;
+
 	pthread_mutex_lock(lock);
 	a = *v1;
 	b = *v2;

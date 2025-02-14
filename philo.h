@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/13 21:21:46 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 13:44:43 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ typedef struct s_philo
 	int					id;
 	long				meals_count;
 	bool				full;
-	long 				last_meal_time; // time passed from last meal
+	long				last_meal_time; // time passed from last meal
 	t_fork				*first_fork;
 	t_fork				*second_fork;
 	t_data				*data;
@@ -147,7 +147,8 @@ long					get_long(pthread_mutex_t *lock, long *v);
 bool					is_dinner_finished(t_data *data);
 void					ft_usleep(long usec, t_data *data);
 void					increment_long(pthread_mutex_t *lock, long *v);
-bool					is_v1_equal_v2(pthread_mutex_t *lock, long *v1, long *v2);
+bool					is_v1_equal_v2(pthread_mutex_t *lock, long *v1,
+							long *v2);
 void					wait_on_mutex(pthread_mutex_t *lock);
 void					create_philo_threads(t_data *data);
 bool					is_starved(t_philo *philo);

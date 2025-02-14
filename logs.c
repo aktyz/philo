@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 14:08:46 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/13 21:55:27 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 13:45:25 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ void	log_status(t_log status, t_philo *philo)
 {
 	long		elapsed;
 	static bool	is_log_off;
-	
+
 	elapsed = ft_get_time(MICROSEC, philo->data) - philo->data->start_time;
 	elapsed = elapsed / 1e3;
 	if (philo->full) // TODO: in which cases do we need it
 		return ;
 	pthread_mutex_lock(&philo->data->log_mutex);
-	if(!is_log_off)
+	if (!is_log_off)
 	{
 		if (status == TAKE_FORK)
 			take_fork(elapsed, philo->id);

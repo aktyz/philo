@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:51 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/13 21:48:44 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 13:48:48 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	ft_usleep(long usec, t_data *data)
 	while (ft_get_time(MICROSEC, data) - start < usec)
 	{
 		if (is_dinner_finished(data))
-			break;
+			break ;
 		elapsed = ft_get_time(MICROSEC, data) - start;
 		remaining = usec - elapsed;
 		if (remaining > 1e3)
@@ -79,6 +79,7 @@ void	ft_usleep(long usec, t_data *data)
 		}
 	}
 }
+
 /**
  * Function returning true if philosopher waited too long for
  * his meal and is dying.
