@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 16:12:03 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 16:14:49 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ void					ft_philos_init(t_data *data);
 void					ft_philo_start(t_data *data);
 void					ft_philo_log(t_log status, t_philo *philo);
 void					*ft_philo_task(void *data);
+void					ft_philo_clean(t_data *data);
 
 /**
  * Error management functions

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 18:28:57 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 15:05:40 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 16:29:47 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static const char	**get_philo_error_messages(void);
 void	ft_philo_error(t_philo_errors e_nb, t_data *data)
 {
 	ft_set_bool(&data->data_mutex, &data->is_sym_ended, true);
+	ft_philo_clean(data);
 	if (e_nb < 0 || e_nb >= NB_ERRORS)
 	{
 		printf("Unknown error!\n");

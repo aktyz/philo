@@ -6,7 +6,7 @@
 #    By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/14 16:28:52 by zslowian          #+#    #+#              #
-#    Updated: 2025/02/14 15:10:02 by zslowian         ###   ########.fr        #
+#    Updated: 2025/02/14 16:15:11 by zslowian         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,8 @@ FLAGS = -Wall -Wextra -Werror
 RM = rm -f
 CC = cc
 
-SRC = errors.c \
+SRC = clean.c \
+	errors.c \
 	get_set.c \
 	init.c \
 	logs.c \

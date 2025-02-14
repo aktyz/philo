@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/07 16:59:07 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 16:33:55 by zslowian         ###   ########.fr       */
+/*   Created: 2025/02/14 16:13:45 by zslowian          #+#    #+#             */
+/*   Updated: 2025/02/14 16:35:41 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int argc, char *argv[])
-{
-	t_data	data;
+void	ft_philo_clean(t_data *data);
 
-	if (argc > 4 && argc < 7)
+void	ft_philo_clean(t_data *data)
+{
+	int	i;
+
+	pthread_mutex_destroy(&data->data_mutex);
+	pthread_mutex_destroy(&data->log_mutex);
+	pthread_mutex_destroy(&data->start);
+	i = -1;
+	while (++i < data->nb_philos)
 	{
-		ft_philo_parse(&data, argv);
-		ft_philos_init(&data);
-		ft_philo_start(&data);
-		ft_philo_clean(&data);
+		pthread_mutex_destroy(&data->forks[i].fork);
 	}
-	else
-		ft_philo_instruct(&data);
-	return (0);
+	if (data->philos)
+		free(data->philos);
+	if (data->forks)
+		free(data->forks);
 }

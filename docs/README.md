@@ -20,7 +20,7 @@ p[4]: f[4], f[3]<br><br>
 - usun flagi debuga z Makefila
 - uzywa make re w czasie evaluacji
 - uporzadkowac jednostki czasu
-- clean() (check with valgrind)
+- error management (check with valgrind on error exits)
 
 # Nice README.md
 Time to learn creating proper README files... Once the project is done...

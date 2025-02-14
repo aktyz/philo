@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 15:06:15 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 16:34:11 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@ void	ft_philos_init(t_data *data)
 	data->is_sym_ended = false;
 	data->philos = ft_malloc(data->nb_philos * sizeof(t_philo), data);
 	data->forks = ft_malloc(data->nb_philos * sizeof(t_fork), data);
+	if (data->philos == NULL || data->forks == NULL)
+	{
+		ft_philo_error(MALLOC_ERROR, data);
+		return ;
+	}
 	data->nb_philos_full = 0;
 	pthread_mutex_init(&data->data_mutex, NULL);
 	pthread_mutex_init(&data->log_mutex, NULL);
