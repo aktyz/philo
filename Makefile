@@ -6,7 +6,7 @@
 #    By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/14 16:28:52 by zslowian          #+#    #+#              #
-#    Updated: 2025/02/12 18:10:09 by zslowian         ###   ########.fr        #
+#    Updated: 2025/02/14 15:10:02 by zslowian         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,6 @@ SRC = errors.c \
 	parse.c \
 	start.c \
 	sync.c \
-	tests.c \
 	utils.c
 
 OBJ = $(SRC:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:51 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 13:48:48 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:09:46 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 void	*ft_malloc(size_t bytes, t_data *data);
 long	ft_get_time(t_time_code time_code, t_data *data);
 void	ft_usleep(long usec, t_data *data);
-bool	is_starved(t_philo *philo);
+void	ft_wait_for_all(pthread_mutex_t *lock);
+bool	ft_is_philo_starved(t_philo *philo);
 
 /**
  * Wrapper around malloc function with a check if malloc
@@ -66,7 +67,7 @@ void	ft_usleep(long usec, t_data *data)
 	start = ft_get_time(MICROSEC, data);
 	while (ft_get_time(MICROSEC, data) - start < usec)
 	{
-		if (is_dinner_finished(data))
+		if (ft_is_philo_finished(data))
 			break ;
 		elapsed = ft_get_time(MICROSEC, data) - start;
 		remaining = usec - elapsed;
@@ -81,22 +82,12 @@ void	ft_usleep(long usec, t_data *data)
 }
 
 /**
- * Function returning true if philosopher waited too long for
- * his meal and is dying.
- * 
- * Returining false if philo is good to go for another round
+ * Function allowing to start all threads in the same time - once
+ * all philosophers threads has been created
  *
  */
-bool	is_starved(t_philo *philo)
+void	ft_wait_for_all(pthread_mutex_t *lock)
 {
-	long	elapsed;
-
-	elapsed = ft_get_time(MICROSEC, philo->data) - philo->last_meal_time;
-	if (elapsed >= (philo->data->die_time))
-	{
-		set_bool(&philo->data->data_mutex, &philo->data->is_anyone_dead, true);
-		return (true);
-	}
-	else
-		return (false);
+	pthread_mutex_lock(lock);
+	pthread_mutex_unlock(lock);
 }

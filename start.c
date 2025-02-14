@@ -6,83 +6,113 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/13 21:47:37 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:07:32 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void		dinner_start(t_data *data);
-void		*philo_task(void *data);
-static void	one_philo(t_data *data);
-static void	eat(t_philo *philo);
-static void	think(t_philo *philo);
+void		ft_philo_start(t_data *data);
+void		*ft_philo_task(void *data);
+static void	ft_one_philo(t_data *data);
+static void	ft_philo_eat(t_philo *philo);
+static void	ft_philo_think(t_philo *philo);
 
-void	dinner_start(t_data *data)
+/**
+ * Function starting the actual simulation
+ *
+ */
+void	ft_philo_start(t_data *data)
 {
 	int	i;
 
-	set_start_time(data);
+	ft_set_start_time(data);
 	if (data->min_eat == 0)
 		return ;
 	else if (data->nb_philos == 1)
-		one_philo(data);
+		ft_one_philo(data);
 	else
-		create_philo_threads(data);
+		ft_threads_creation(data);
 	i = -1;
 	while (++i < data->nb_philos)
 		pthread_join(data->philos[i].thread_id, NULL);
 }
 
-void	*philo_task(void *data)
+/**
+ * Function passed to pthread_create(), it contains the loop
+ * used by each philosopher to achieve their tasks
+ *
+ */
+void	*ft_philo_task(void *data)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	wait_on_mutex(&philo->data->start);
-	while (!is_dinner_finished(philo->data))
+	ft_wait_for_all(&philo->data->start);
+	while (!ft_is_philo_finished(philo->data))
 	{
 		if (philo->full)
 			break ;
-		eat(philo);
-		log_status(SLEEP, philo);
+		ft_philo_eat(philo);
+		ft_philo_log(SLEEP, philo);
 		ft_usleep(philo->data->sleep_time, philo->data);
-		think(philo);
+		ft_philo_think(philo);
 	}
 	return (NULL);
 }
 
-static void	eat(t_philo *philo)
+/**
+ * Function used by each philo to eat, it has a structure:
+ * - pick up forks - one by one
+ * - if not starved start eating else die
+ * - if not starved and finished eating put down the forks
+ * - mechanisms for exiting if the 6th arg passed to main
+ *
+ */
+static void	ft_philo_eat(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->first_fork->fork);
-	log_status(TAKE_FORK, philo);
-	pthread_mutex_lock(&philo->second_fork->fork);
-	log_status(TAKE_FORK, philo);
-	if (!is_starved(philo))
+	if (!pthread_mutex_lock(&philo->first_fork->fork))
+	{
+		ft_philo_log(TAKE_FORK, philo);
+		if (pthread_mutex_lock(&philo->second_fork->fork))
+			pthread_mutex_unlock(&philo->first_fork->fork);
+		else
+			ft_philo_log(TAKE_FORK, philo);
+	}
+	if (!ft_is_philo_starved(philo))
 	{
 		philo->last_meal_time = ft_get_time(MICROSEC, philo->data);
-		log_status(EAT, philo);
+		ft_philo_log(EAT, philo);
 		ft_usleep(philo->data->eat_time, philo->data);
 	}
 	else
-		log_status(DIE, philo);
+		ft_philo_log(DIE, philo);
 	pthread_mutex_unlock(&philo->first_fork->fork);
 	pthread_mutex_unlock(&philo->second_fork->fork);
 	philo->meals_count++;
 	if (philo->data->min_eat > 0 && philo->meals_count == philo->data->min_eat)
 	{
 		philo->full = true;
-		increment_long(&philo->data->data_mutex, &philo->data->nb_philos_full);
+		ft_inc_long(&philo->data->data_mutex, &philo->data->nb_philos_full);
 	}
 }
 
-static void	think(t_philo *philo)
+/**
+ * Function used by each philo to think, which is just announcing it
+ *
+ */
+static void	ft_philo_think(t_philo *philo)
 {
-	log_status(THINK, philo);
+	ft_philo_log(THINK, philo);
 }
 
-static void	one_philo(t_data *data)
+/**
+ * Simple logs in case there's only one philosopher
+ * who will never eat because he is missing second fork
+ *
+ */
+static void	ft_one_philo(t_data *data)
 {
-	log_status(TAKE_FORK, data->philos);
-	log_status(DIE, data->philos);
+	ft_philo_log(TAKE_FORK, data->philos);
+	ft_philo_log(DIE, data->philos);
 }

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 13:44:43 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:23:16 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,7 @@ struct					s_data
 	long				min_eat;
 	long				nb_philos_full;
 	long				start_time;
-	long				nb_threads_ready;
-	bool				is_anyone_dead;
+	bool				is_sym_ended;
 	pthread_mutex_t		data_mutex;
 	pthread_mutex_t		log_mutex;
 	pthread_mutex_t		start;
@@ -116,18 +115,18 @@ struct					s_data
  * Program functions
  *
  */
-void					parse_input(t_data *data, char *argv[]);
-void					data_init(t_data *data);
-void					dinner_start(t_data *data);
-void					log_status(t_log status, t_philo *philo);
-void					*philo_task(void *data);
+void					ft_philo_parse(t_data *data, char *argv[]);
+void					ft_philos_init(t_data *data);
+void					ft_philo_start(t_data *data);
+void					ft_philo_log(t_log status, t_philo *philo);
+void					*ft_philo_task(void *data);
 
 /**
  * Error management functions
  *
  */
 void					ft_philo_error(t_philo_errors e_nb, t_data *data);
-void					how_to_run(t_data *data);
+void					ft_philo_instruct(t_data *data);
 
 /**
  * Utils functions
@@ -135,30 +134,21 @@ void					how_to_run(t_data *data);
  */
 void					*ft_malloc(size_t bytes, t_data *data);
 long					ft_get_time(t_time_code time_code, t_data *data);
+void					ft_usleep(long usec, t_data *data);
+void					ft_set_bool(pthread_mutex_t *lock, bool *v, bool new_v);
+bool					ft_get_bool(pthread_mutex_t *lock, bool *v);
+void					ft_set_long(pthread_mutex_t *lock, long *v, long new_v);
+long					ft_get_long(pthread_mutex_t *lock, long *v);
+void					ft_inc_long(pthread_mutex_t *lock, long *v);
 
 /**
  * Thread synchronisations and helpers
  *
  */
-void					set_bool(pthread_mutex_t *lock, bool *v, bool new_v);
-bool					get_bool(pthread_mutex_t *lock, bool *v);
-void					set_long(pthread_mutex_t *lock, long *v, long new_v);
-long					get_long(pthread_mutex_t *lock, long *v);
-bool					is_dinner_finished(t_data *data);
-void					ft_usleep(long usec, t_data *data);
-void					increment_long(pthread_mutex_t *lock, long *v);
-bool					is_v1_equal_v2(pthread_mutex_t *lock, long *v1,
-							long *v2);
-void					wait_on_mutex(pthread_mutex_t *lock);
-void					create_philo_threads(t_data *data);
-bool					is_starved(t_philo *philo);
-void					set_start_time(t_data *data);
-
-/**
- * Testing functions
- *
- */
-void					test_all(void);
-void					test_is_v1_equal_v2(void);
+void					ft_threads_creation(t_data *data);
+void					ft_set_start_time(t_data *data);
+void					ft_wait_for_all(pthread_mutex_t *lock);
+bool					ft_is_philo_starved(t_philo *philo);
+bool					ft_is_philo_finished(t_data *data);
 
 #endif

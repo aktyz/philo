@@ -6,26 +6,31 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/13 21:13:23 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:06:15 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void		data_init(t_data *data);
-static void	philo_init(t_data *data);
-static void	assign_forks(t_philo *philo, t_fork *forks, int i);
+void		ft_philos_init(t_data *data);
+static void	ft_philo_init(t_data *data);
+static void	ft_assign_forks(t_philo *philo, t_fork *forks, int i);
+void		ft_threads_creation(t_data *data);
 
-void	data_init(t_data *data)
+/**
+ * Function initializing program main structure
+ * and fork mutexes - one per each philosopher
+ *
+ */
+void	ft_philos_init(t_data *data)
 {
 	int	i;
 
 	i = -1;
-	data->is_anyone_dead = false;
+	data->is_sym_ended = false;
 	data->philos = ft_malloc(data->nb_philos * sizeof(t_philo), data);
 	data->forks = ft_malloc(data->nb_philos * sizeof(t_fork), data);
 	data->nb_philos_full = 0;
-	data->nb_threads_ready = 0;
 	pthread_mutex_init(&data->data_mutex, NULL);
 	pthread_mutex_init(&data->log_mutex, NULL);
 	pthread_mutex_init(&data->start, NULL);
@@ -34,10 +39,14 @@ void	data_init(t_data *data)
 		pthread_mutex_init(&data->forks[i].fork, NULL);
 		data->forks[i].fork_id = i;
 	}
-	philo_init(data);
+	ft_philo_init(data);
 }
 
-static void	philo_init(t_data *data)
+/**
+ * Function initializing individual philosopers data
+ *
+ */
+static void	ft_philo_init(t_data *data)
 {
 	int		i;
 	t_philo	*philo;
@@ -50,11 +59,15 @@ static void	philo_init(t_data *data)
 		philo->full = false;
 		philo->meals_count = 0;
 		philo->data = data;
-		assign_forks(philo, data->forks, i);
+		ft_assign_forks(philo, data->forks, i);
 	}
 }
 
-static void	assign_forks(t_philo *philo, t_fork *forks, int pos)
+/**
+ * Function assigning forks to each philosoper - 
+ *
+ */
+static void	ft_assign_forks(t_philo *philo, t_fork *forks, int pos)
 {
 	int	philo_nb;
 
@@ -69,4 +82,22 @@ static void	assign_forks(t_philo *philo, t_fork *forks, int pos)
 		philo->first_fork = &forks[(pos + 1) % philo_nb];
 		philo->second_fork = &forks[pos];
 	}
+}
+
+/**
+ * Function initializing one thread per philosopher
+ *
+ */
+void	ft_threads_creation(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	pthread_mutex_lock(&data->start);
+	while (++i < data->nb_philos)
+	{
+		pthread_create(&data->philos[i].thread_id, NULL, ft_philo_task,
+			&data->philos[i]);
+	}
+	pthread_mutex_unlock(&data->start);
 }

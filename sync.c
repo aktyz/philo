@@ -6,61 +6,55 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:31 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 13:47:42 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:09:33 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	increment_long(pthread_mutex_t *lock, long *v);
-bool	is_v1_equal_v2(pthread_mutex_t *lock, long *v1, long *v2);
-void	wait_on_mutex(pthread_mutex_t *lock);
-void	create_philo_threads(t_data *data);
-void	set_start_time(t_data *data);
+void	ft_inc_long(pthread_mutex_t *lock, long *v);
+bool	ft_is_philo_starved(t_philo *philo);
+void	ft_set_start_time(t_data *data);
 
-void	increment_long(pthread_mutex_t *lock, long *v)
+/**
+ * Wrapper around a mutex protected long value
+ *
+ */
+void	ft_inc_long(pthread_mutex_t *lock, long *v)
 {
 	pthread_mutex_lock(lock);
 	*v += 1;
 	pthread_mutex_unlock(lock);
 }
 
-bool	is_v1_equal_v2(pthread_mutex_t *lock, long *v1, long *v2)
+/**
+ * Function returning true if philosopher waited too long for
+ * his meal and is dying.
+ * 
+ * Returining false if philo is good to go for another round
+ *
+ */
+bool	ft_is_philo_starved(t_philo *philo)
 {
-	long	a;
-	long	b;
+	long	elapsed;
 
-	pthread_mutex_lock(lock);
-	a = *v1;
-	b = *v2;
-	pthread_mutex_unlock(lock);
-	if (a == b)
-		return (true);
-	return (false);
-}
-
-void	wait_on_mutex(pthread_mutex_t *lock)
-{
-	pthread_mutex_lock(lock);
-	pthread_mutex_unlock(lock);
-}
-
-void	create_philo_threads(t_data *data)
-{
-	int	i;
-
-	i = -1;
-	pthread_mutex_lock(&data->start);
-	while (++i < data->nb_philos)
+	elapsed = ft_get_time(MICROSEC, philo->data) - philo->last_meal_time;
+	if (elapsed >= (philo->data->die_time))
 	{
-		pthread_create(&data->philos[i].thread_id, NULL, philo_task,
-			&data->philos[i]);
-		increment_long(&data->data_mutex, &data->nb_threads_ready);
+		ft_set_bool(&philo->data->data_mutex,
+			&philo->data->is_sym_ended, true);
+		return (true);
 	}
-	pthread_mutex_unlock(&data->start);
+	else
+		return (false);
 }
 
-void	set_start_time(t_data *data)
+/**
+ * Function setting the symulation start time and copying it over
+ * to each philosopher as last meal start time
+ *
+ */
+void	ft_set_start_time(t_data *data)
 {
 	long	start;
 	int		i;

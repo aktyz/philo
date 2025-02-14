@@ -6,26 +6,34 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 17:00:09 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/13 19:34:27 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:17:22 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	set_bool(pthread_mutex_t *lock, bool *v, bool new_v);
-bool	get_bool(pthread_mutex_t *lock, bool *v);
-void	set_long(pthread_mutex_t *lock, long *v, long new_v);
-long	get_long(pthread_mutex_t *lock, long *v);
-bool	is_dinner_finished(t_data *data);
+void	ft_set_bool(pthread_mutex_t *lock, bool *v, bool new_v);
+bool	ft_get_bool(pthread_mutex_t *lock, bool *v);
+void	ft_set_long(pthread_mutex_t *lock, long *v, long new_v);
+long	ft_get_long(pthread_mutex_t *lock, long *v);
+bool	ft_is_philo_finished(t_data *data);
 
-void	set_bool(pthread_mutex_t *lock, bool *v, bool new_v)
+/**
+ * Wrapper around updating a bool value protected by it's lock
+ *
+ */
+void	ft_set_bool(pthread_mutex_t *lock, bool *v, bool new_v)
 {
 	pthread_mutex_lock(lock);
 	*v = new_v;
 	pthread_mutex_unlock(lock);
 }
 
-bool	get_bool(pthread_mutex_t *lock, bool *v)
+/**
+ * Wrapper around reading a bool value protected by it's lock
+ *
+ */
+bool	ft_get_bool(pthread_mutex_t *lock, bool *v)
 {
 	bool	result;
 
@@ -35,14 +43,22 @@ bool	get_bool(pthread_mutex_t *lock, bool *v)
 	return (result);
 }
 
-void	set_long(pthread_mutex_t *lock, long *v, long new_v)
+/**
+ * Wrapper around updating a long value protected by it's lock
+ *
+ */
+void	ft_set_long(pthread_mutex_t *lock, long *v, long new_v)
 {
 	pthread_mutex_lock(lock);
 	*v = new_v;
 	pthread_mutex_unlock(lock);
 }
 
-long	get_long(pthread_mutex_t *lock, long *v)
+/**
+ * Wrapper around reading a long value protected by it's lock
+ *
+ */
+long	ft_get_long(pthread_mutex_t *lock, long *v)
 {
 	long	result;
 
@@ -52,7 +68,23 @@ long	get_long(pthread_mutex_t *lock, long *v)
 	return (result);
 }
 
-bool	is_dinner_finished(t_data *data) // shouldn't it be in monitor instead
+/**
+ * Wrapper around reading the most imporant bool of the program - should
+ * it finish working because one of the philosophers died or because
+ * all of the philosophers are full (ate the expected number of meals)
+ *
+ */
+bool	ft_is_philo_finished(t_data *data)
 {
-	return (get_bool(&data->data_mutex, &data->is_anyone_dead));
+	bool	is_starved;
+	bool	are_all_full;
+
+	pthread_mutex_lock(&data->data_mutex);
+	is_starved = data->is_sym_ended;
+	if (data->nb_philos == data->nb_philos_full)
+		are_all_full = true;
+	else
+		are_all_full = false;
+	pthread_mutex_unlock(&data->data_mutex);
+	return (is_starved || are_all_full);
 }
