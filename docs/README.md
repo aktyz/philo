@@ -19,7 +19,6 @@ p[4]: f[4], f[3]<br><br>
 # Notatki gdyby Antoni mial mi evaluacje robic
 - usun flagi debuga z Makefila
 - uzywa make re w czasie evaluacji
-- uporzadkowac jednostki czasu
 - error management (check with valgrind on error exits)
 
 # Nice README.md

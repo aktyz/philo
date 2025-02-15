@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 16:11:34 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:44:49 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,16 @@ void	ft_philo_start(t_data *data)
 		ft_one_philo(data);
 	else
 		ft_threads_creation(data);
+	while(!ft_is_philo_finished(data))
+	{
+		i = -1;
+		while (++i < data->nb_philos)
+			if(ft_is_philo_starved(&data->philos[i]))
+			{
+				ft_philo_log(DIE, &data->philos[i]);
+				break;
+			}
+	}
 	i = -1;
 	while (++i < data->nb_philos)
 		pthread_join(data->philos[i].thread_id, NULL);
@@ -53,10 +63,14 @@ void	*ft_philo_task(void *data)
 	{
 		if (philo->full)
 			break ;
-		ft_philo_eat(philo);
-		ft_philo_log(SLEEP, philo);
-		ft_usleep(philo->data->sleep_time, philo->data);
-		ft_philo_think(philo);
+		if (!ft_is_philo_starved(philo))
+			ft_philo_eat(philo);
+		if (!ft_is_philo_starved(philo))
+			ft_philo_log(SLEEP, philo);
+		if (!ft_is_philo_starved(philo))
+			ft_usleep(philo->data->sleep_time, philo, false);
+		if (!ft_is_philo_starved(philo))
+			ft_philo_think(philo);
 	}
 	return (NULL);
 }
@@ -83,7 +97,7 @@ static void	ft_philo_eat(t_philo *philo)
 	{
 		philo->last_meal_time = ft_get_time(MICROSEC, philo->data);
 		ft_philo_log(EAT, philo);
-		ft_usleep(philo->data->eat_time, philo->data);
+		ft_usleep(philo->data->eat_time, philo, true);
 	}
 	else
 		ft_philo_log(DIE, philo);
@@ -107,7 +121,7 @@ static void	ft_philo_eat(t_philo *philo)
 static void	ft_philo_think(t_philo *philo)
 {
 	ft_philo_log(THINK, philo);
-	ft_usleep(philo->data->max_think_time / 100, philo->data);
+	ft_usleep(philo->data->max_think_time / 100, philo, false);
 }
 
 /**

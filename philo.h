@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 16:14:49 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:28:33 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,8 @@ struct					s_data
 	long				max_think_time;
 	long				min_eat;
 	long				nb_philos_full;
-	long				start_time;
+	long				start_time_micro;
+	long				start_time_mili;
 	bool				is_sym_ended;
 	pthread_mutex_t		data_mutex;
 	pthread_mutex_t		log_mutex;
@@ -136,7 +137,7 @@ void					ft_philo_instruct(t_data *data);
  */
 void					*ft_malloc(size_t bytes, t_data *data);
 long					ft_get_time(t_time_code time_code, t_data *data);
-void					ft_usleep(long usec, t_data *data);
+void					ft_usleep(long usec, t_philo *philo, bool is_eating);
 void					ft_set_bool(pthread_mutex_t *lock, bool *v, bool new_v);
 bool					ft_get_bool(pthread_mutex_t *lock, bool *v);
 void					ft_set_long(pthread_mutex_t *lock, long *v, long new_v);

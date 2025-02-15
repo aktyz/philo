@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:31 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 15:09:33 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:22:00 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	ft_inc_long(pthread_mutex_t *lock, long *v)
  * Function returning true if philosopher waited too long for
  * his meal and is dying.
  * 
- * Returining false if philo is good to go for another round
+ * Returining false if philo is good to go for another task
  *
  */
 bool	ft_is_philo_starved(t_philo *philo)
@@ -59,9 +59,10 @@ void	ft_set_start_time(t_data *data)
 	long	start;
 	int		i;
 
-	start = ft_get_time(MICROSEC, data);
+	start = ft_get_time(MILISEC, data);
+	data->start_time_mili = start;
+	data->start_time_micro = start * 1e3;
 	i = -1;
-	data->start_time = start;
 	while (++i < data->nb_philos)
-		data->philos[i].last_meal_time = start;
+		data->philos[i].last_meal_time = data->start_time_micro;
 }

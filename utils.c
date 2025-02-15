@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:51 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 15:09:46 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/15 16:30:29 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*ft_malloc(size_t bytes, t_data *data);
 long	ft_get_time(t_time_code time_code, t_data *data);
-void	ft_usleep(long usec, t_data *data);
+void	ft_usleep(long usec, t_philo *philo, bool is_eating);
 void	ft_wait_for_all(pthread_mutex_t *lock);
 bool	ft_is_philo_starved(t_philo *philo);
 
@@ -58,24 +58,26 @@ long	ft_get_time(t_time_code time_code, t_data *data)
  * Precise usleep
  *
  */
-void	ft_usleep(long usec, t_data *data)
+void	ft_usleep(long usec, t_philo *philo, bool is_eating)
 {
 	long	start;
 	long	elapsed;
 	long	remaining;
 
-	start = ft_get_time(MICROSEC, data);
-	while (ft_get_time(MICROSEC, data) - start < usec)
+	start = ft_get_time(MICROSEC, philo->data);
+	while (ft_get_time(MICROSEC, philo->data) - start < usec)
 	{
-		if (ft_is_philo_finished(data))
+		if (!is_eating && ft_is_philo_starved(philo))
+			break;
+		if (ft_is_philo_finished(philo->data))
 			break ;
-		elapsed = ft_get_time(MICROSEC, data) - start;
+		elapsed = ft_get_time(MICROSEC, philo->data) - start;
 		remaining = usec - elapsed;
 		if (remaining > 1e3)
 			usleep(remaining / 2);
 		else
 		{
-			while (ft_get_time(MICROSEC, data) - start < usec)
+			while (ft_get_time(MICROSEC, philo->data) - start < usec)
 				;
 		}
 	}
