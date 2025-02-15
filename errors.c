@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 18:28:57 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 19:45:41 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/15 19:57:31 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,22 @@ void	ft_philo_error(t_philo_errors e_nb, t_data *data)
 {
 	if (e_nb == NO_ERROR)
 		return ;
-	ft_set_bool(&data->data_mutex, &data->is_sym_ended, true);
-	ft_philo_clean(data);
-	if (e_nb < 0 || e_nb >= NB_ERRORS)
+	if (e_nb > 4)
 	{
-		printf("Unknown error!\n");
-		return ;
+		pthread_mutex_lock(&data->data_mutex);
+		data->is_error = e_nb;
+		data->is_sym_ended = true;
+		pthread_mutex_unlock(&data->data_mutex);
 	}
-	printf("Error: %s\n", get_philo_error_messages()[e_nb]);
+	else
+	{
+		data->is_error = e_nb;
+		data->is_sym_ended = true;
+	}
+	if (e_nb < 0 || e_nb >= NB_ERRORS)
+		printf("Unknown error!\n");
+	else
+		printf("Error: %s\n", get_philo_error_messages()[e_nb]);
 	return ;
 }
 
@@ -59,11 +67,11 @@ static const char	**get_philo_error_messages(void)
 	static const char	*e_msg[NB_ERRORS];
 
 	e_msg[1] = "Your argument is not a philo valid number";
-	e_msg[2] = "Memory allocation error";
-	e_msg[3] = "Provided integer is greater than INT_MAX";
-	e_msg[4] = "Any of the arguments cannot be zero";
-	e_msg[5] = "Failed to initialize the array of mutexes";
-	e_msg[6] = "Values you provided are not allowing for thinking time";
-	e_msg[7] = "Time calculation function failed";
+	e_msg[2] = "Provided integer is greater than INT_MAX";
+	e_msg[3] = "Memory allocation error";
+	e_msg[4] = "Failed to initialize data protection mutex";
+	e_msg[5] = "Failed to initialize mutex";
+	e_msg[6] = "Time calculation function failed";
+	e_msg[7] = "Failed to initialize thread";
 	return (e_msg);
 }

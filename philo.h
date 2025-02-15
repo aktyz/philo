@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 19:45:52 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/15 19:54:14 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ typedef enum e_philo_errors
 {
 	NO_ERROR,
 	ATOI_ERROR,
-	MALLOC_ERROR,
 	OVERFLOW_ERROR,
-	ZERO_ARG,
-	PTHREAD_INIT_ERROR,
-	NO_THINK_TIME_AVAILABLE,
+	MALLOC_ERROR,
+	DATA_MUTEX_ERROR,
+	MUTEX_INIT_ERROR,
 	TIME_ISSUE,
+	THRED_INIT_ERROR,
 	NB_ERRORS
 }						t_philo_errors;
 
