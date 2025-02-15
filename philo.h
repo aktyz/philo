@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 16:28:33 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/15 19:45:52 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ typedef struct s_data	t_data;
  */
 typedef enum e_philo_errors
 {
+	NO_ERROR,
 	ATOI_ERROR,
 	MALLOC_ERROR,
 	OVERFLOW_ERROR,
-	INCORRECT_NB_ARGS,
 	ZERO_ARG,
 	PTHREAD_INIT_ERROR,
 	NO_THINK_TIME_AVAILABLE,
@@ -111,6 +111,7 @@ struct					s_data
 	pthread_mutex_t		start;
 	t_fork				*forks;
 	t_philo				*philos;
+	t_philo_errors		is_error;
 };
 
 /**
@@ -129,7 +130,7 @@ void					ft_philo_clean(t_data *data);
  *
  */
 void					ft_philo_error(t_philo_errors e_nb, t_data *data);
-void					ft_philo_instruct(t_data *data);
+void					ft_philo_instruct(void);
 
 /**
  * Utils functions
