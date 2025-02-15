@@ -6,7 +6,7 @@
 #    By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/14 16:28:52 by zslowian          #+#    #+#              #
-#    Updated: 2025/02/14 16:15:11 by zslowian         ###   ########.fr        #
+#    Updated: 2025/02/15 18:25:11 by zslowian         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,5 +46,8 @@ fclean: clean
 	@$(RM) $(NAME)
 
 re: fclean all
+
+hell: all
+	valgrind --tool=helgrind -s ./philo 100 800 200 200 2
 
 .PHONY: all clean fclean libft re	
