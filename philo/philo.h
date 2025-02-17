@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:30:17 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 20:17:34 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ typedef struct s_philo
 	t_mutex				*second_fork;
 	t_data				*data;
 	pthread_t			thread_id;
+	t_mutex				philo_lock;
 }						t_philo;
 
 /**

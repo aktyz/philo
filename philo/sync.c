@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:31 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:35:32 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 20:46:07 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,15 @@ void	ft_inc_long(pthread_mutex_t *lock, long *v)
 bool	ft_is_philo_starved(t_philo *philo)
 {
 	long	elapsed;
-
-	elapsed = ft_get_time(MICROSEC, philo->data) - philo->last_meal_time;
-	if (elapsed >= (philo->data->die_time))
+	long	last_meal_time;
+	long	die_time;
+	
+	last_meal_time = ft_get_long(&philo->philo_lock.lock,
+		&philo->last_meal_time);
+	die_time = ft_get_long(&philo->data->data_mutex.lock,
+		&philo->data->die_time);
+	elapsed = ft_get_time(MICROSEC, philo->data) - last_meal_time;
+	if (elapsed >= (die_time))
 	{
 		ft_set_bool(&philo->data->data_mutex.lock,
 			&philo->data->is_sym_ended, true);

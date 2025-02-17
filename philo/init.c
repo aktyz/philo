@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:22:39 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 20:22:16 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	ft_philos_init(t_data *data)
 static void	ft_philo_init(t_data *data)
 {
 	int		i;
+	int		is_success;
 	t_philo	*philo;
 
 	i = -1;
@@ -57,6 +58,11 @@ static void	ft_philo_init(t_data *data)
 		philo->full = false;
 		philo->meals_count = 0;
 		philo->data = data;
+		is_success = pthread_mutex_init(&philo->philo_lock.lock, NULL);
+		if (is_success != 0)
+			ft_philo_error(MUTEX_INIT_ERROR, data);
+		else
+			philo->philo_lock.lock_id = philo->id;
 		ft_assign_forks(philo, data->forks, i);
 	}
 }

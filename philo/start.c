@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:30:58 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 20:45:45 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,12 @@ void	ft_philo_start(t_data *data)
 void	*ft_philo_task(void *data)
 {
 	t_philo	*philo;
+	long	sleep_time;
 
+	
 	philo = (t_philo *)data;
+	sleep_time = ft_get_long(&philo->data->data_mutex.lock,
+		&philo->data->sleep_time);
 	ft_wait_for_all(&philo->data->start_mutex.lock);
 	while (!ft_is_philo_finished(philo->data))
 	{
@@ -68,7 +72,7 @@ void	*ft_philo_task(void *data)
 		if (!ft_is_philo_starved(philo))
 			ft_philo_log(SLEEP, philo);
 		if (!ft_is_philo_starved(philo))
-			ft_usleep(philo->data->sleep_time, philo, false);
+			ft_usleep(sleep_time, philo, false);
 		if (!ft_is_philo_starved(philo))
 			ft_philo_think(philo);
 	}
@@ -85,6 +89,10 @@ void	*ft_philo_task(void *data)
  */
 static void	ft_philo_eat(t_philo *philo)
 {
+	long	eat_time;
+
+	eat_time = ft_get_long(&philo->data->data_mutex.lock,
+		&philo->data->eat_time);
 	if (!pthread_mutex_lock(&philo->first_fork->lock))
 	{
 		ft_philo_log(TAKE_FORK, philo);
@@ -95,14 +103,16 @@ static void	ft_philo_eat(t_philo *philo)
 	}
 	if (!ft_is_philo_starved(philo))
 	{
-		philo->last_meal_time = ft_get_time(MICROSEC, philo->data);
+		ft_set_long(&philo->philo_lock.lock, &philo->last_meal_time,
+			ft_get_time(MICROSEC, philo->data));
 		ft_philo_log(EAT, philo);
-		ft_usleep(philo->data->eat_time, philo, true);
+		ft_usleep(eat_time, philo, true);
 	}
 	else
 		ft_philo_log(DIE, philo);
 	pthread_mutex_unlock(&philo->first_fork->lock);
 	pthread_mutex_unlock(&philo->second_fork->lock);
+	pthread_mutex_lock(&philo->philo_lock.lock);
 	philo->meals_count++;
 	if (philo->data->min_eat > 0 && philo->meals_count == philo->data->min_eat)
 	{
@@ -110,6 +120,7 @@ static void	ft_philo_eat(t_philo *philo)
 		ft_inc_long(&philo->data->data_mutex.lock,
 			&philo->data->nb_philos_full);
 	}
+	pthread_mutex_unlock(&philo->philo_lock.lock);
 }
 
 /**
@@ -121,8 +132,12 @@ static void	ft_philo_eat(t_philo *philo)
  */
 static void	ft_philo_think(t_philo *philo)
 {
+	long time;
+
+	time = ft_get_long(&philo->data->data_mutex.lock,
+		&philo->data->max_think_time);
 	ft_philo_log(THINK, philo);
-	ft_usleep(philo->data->max_think_time / 100, philo, false);
+	ft_usleep(time / 100, philo, false);
 }
 
 /**
