@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:18:19 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:30:58 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,8 @@ void	ft_philo_start(t_data *data)
 			}
 		}
 	}
-	if (!data->is_error && data->nb_philos > 1)
-	{
-		i = -1;
-		while (++i < data->nb_philos)
-			pthread_join(data->philos[i].thread_id, NULL);
-	}
+	ft_wait_all_threads(data);
 }
-//Error: TOO_MANY_LINES - Function has more than 25 lines
 
 /**
  * Function passed to pthread_create(), it contains the loop

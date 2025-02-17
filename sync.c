@@ -6,16 +6,17 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:31 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:21:08 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:35:32 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	ft_inc_long(pthread_mutex_t *lock, long *v);
-bool	ft_is_philo_starved(t_philo *philo);
-void	ft_set_start_time(t_data *data);
-bool	ft_mutex_creation(t_data *data);
+void		ft_inc_long(pthread_mutex_t *lock, long *v);
+bool		ft_is_philo_starved(t_philo *philo);
+void		ft_set_start_time(t_data *data);
+bool		ft_mutex_creation(t_data *data);
+static bool	ft_create_data_locks(t_data *data);
 
 /**
  * Wrapper around a mutex protected long value
@@ -80,6 +81,30 @@ bool	ft_mutex_creation(t_data *data)
 	int	i;
 	int	is_success;
 
+	is_success = ft_create_data_locks(data);
+	if (!is_success)
+		return (false);
+	i = -1;
+	while (++i < data->nb_philos)
+	{
+		is_success = pthread_mutex_init(&data->forks[i].lock, NULL);
+		if (is_success == 0)
+			data->forks[i].lock_id = i;
+		else
+		{
+			ft_destroy_previous_mutexes(data, i);
+			ft_philo_error(MUTEX_INIT_ERROR, data);
+			return (false);
+		}
+	}
+	return (true);
+}
+
+static bool	ft_create_data_locks(t_data *data)
+{
+	int	i;
+	int	is_success;
+
 	i = -1;
 	is_success = pthread_mutex_init(&data->data_mutex.lock, NULL);
 	if (is_success == 0)
@@ -100,18 +125,5 @@ bool	ft_mutex_creation(t_data *data)
 		ft_philo_error(DATA_MUTEX_ERROR, data);
 		return (false);
 	}
-	while (++i < data->nb_philos)
-	{
-		is_success = pthread_mutex_init(&data->forks[i].lock, NULL);
-		if (is_success == 0)
-			data->forks[i].lock_id = i;
-		else
-		{
-			ft_destroy_previous_mutexes(data, i);
-			ft_philo_error(MUTEX_INIT_ERROR, data);
-			return (false);
-		}
-	}
 	return (true);
 }
-//Error: TOO_MANY_LINES - Function has more than 25 lines

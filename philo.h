@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 11:41:28 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:30:17 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,7 @@ bool					ft_mutex_creation(t_data *data);
 void					ft_destroy_previous_mutexes(t_data *data, int failed);
 void					ft_wait_previous_threads(t_data *data, int failed);
 void					ft_threads_creation(t_data *data);
+void					ft_wait_all_threads(t_data *data);
 void					ft_set_start_time(t_data *data);
 void					ft_wait_for_all(pthread_mutex_t *lock);
 bool					ft_is_philo_starved(t_philo *philo);

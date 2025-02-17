@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/14 16:13:45 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:02:22 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:30:41 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void		ft_philo_clean(t_data *data);
 static void	ft_destroy_mutex(t_mutex *lock);
 void		ft_destroy_previous_mutexes(t_data *data, int failed);
 void		ft_wait_previous_threads(t_data *data, int failed);
+void		ft_wait_all_threads(t_data *data);
 
 void	ft_philo_clean(t_data *data)
 {
@@ -61,4 +62,16 @@ void	ft_wait_previous_threads(t_data *data, int failed)
 	i = -1;
 	while (++i < failed)
 		pthread_join(data->philos[i].thread_id, NULL);
+}
+
+void	ft_wait_all_threads(t_data *data)
+{
+	int	i;
+
+	if (!data->is_error && data->nb_philos > 1)
+	{
+		i = -1;
+		while (++i < data->nb_philos)
+			pthread_join(data->philos[i].thread_id, NULL);
+	}
 }
