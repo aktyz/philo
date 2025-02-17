@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:31 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 16:22:00 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:50:05 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	ft_inc_long(pthread_mutex_t *lock, long *v);
 bool	ft_is_philo_starved(t_philo *philo);
 void	ft_set_start_time(t_data *data);
+bool	ft_mutex_creation(t_data *data);
 
 /**
  * Wrapper around a mutex protected long value
@@ -41,7 +42,7 @@ bool	ft_is_philo_starved(t_philo *philo)
 	elapsed = ft_get_time(MICROSEC, philo->data) - philo->last_meal_time;
 	if (elapsed >= (philo->data->die_time))
 	{
-		ft_set_bool(&philo->data->data_mutex,
+		ft_set_bool(&philo->data->data_mutex.lock,
 			&philo->data->is_sym_ended, true);
 		return (true);
 	}
@@ -65,4 +66,46 @@ void	ft_set_start_time(t_data *data)
 	i = -1;
 	while (++i < data->nb_philos)
 		data->philos[i].last_meal_time = data->start_time_micro;
+}
+
+/**
+ * Function initializing all program locks (mutex)
+ * - 3 in main data structure
+ * - one for each philosopher
+ * Function returns false if any of the mutex creation fails,
+ * and true if all went good
+ */
+bool	ft_mutex_creation(t_data *data)
+{
+	int	i;
+	int	is_success;
+
+	i = -1;
+	if (!(is_success = pthread_mutex_init(&data->data_mutex.lock, NULL)))
+	{
+		data->data_mutex.lock_id = 1;
+		if (!(is_success = pthread_mutex_init(&data->log_mutex.lock, NULL)))
+		{
+			data->log_mutex.lock_id = 1;
+			if(!(is_success = pthread_mutex_init(&data->start_mutex.lock, NULL)))
+			data->start_mutex.lock_id = 1;
+		}
+	}
+	if (is_success != 0)
+	{
+		ft_philo_error(DATA_MUTEX_ERROR, data);
+		return (false);
+	}
+	while (++i < data->nb_philos)
+	{
+		if (!(is_success = pthread_mutex_init(&data->forks[i].lock, NULL)))
+			data->forks[i].lock_id = i;
+		else
+		{
+			ft_destroy_previous_mutexes(data, i);
+			ft_philo_error(MUTEX_INIT_ERROR, data);
+			return (false);
+		}
+	}
+	return (true);
 }

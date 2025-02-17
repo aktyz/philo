@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 17:00:09 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 15:17:22 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:32:57 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,12 @@ bool	ft_is_philo_finished(t_data *data)
 	bool	is_starved;
 	bool	are_all_full;
 
-	pthread_mutex_lock(&data->data_mutex);
+	pthread_mutex_lock(&data->data_mutex.lock);
 	is_starved = data->is_sym_ended;
 	if (data->nb_philos == data->nb_philos_full)
 		are_all_full = true;
 	else
 		are_all_full = false;
-	pthread_mutex_unlock(&data->data_mutex);
+	pthread_mutex_unlock(&data->data_mutex.lock);
 	return (is_starved || are_all_full);
 }

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 18:28:57 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 19:57:31 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:32:34 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ void	ft_philo_error(t_philo_errors e_nb, t_data *data)
 		return ;
 	if (e_nb > 4)
 	{
-		pthread_mutex_lock(&data->data_mutex);
+		pthread_mutex_lock(&data->data_mutex.lock);
 		data->is_error = e_nb;
 		data->is_sym_ended = true;
-		pthread_mutex_unlock(&data->data_mutex);
+		pthread_mutex_unlock(&data->data_mutex.lock);
 	}
 	else
 	{

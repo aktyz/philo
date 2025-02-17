@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/14 16:34:11 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:01:46 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void		ft_philos_init(t_data *data);
 static void	ft_philo_init(t_data *data);
-static void	ft_assign_forks(t_philo *philo, t_fork *forks, int i);
+static void	ft_assign_forks(t_philo *philo, t_mutex *forks, int i);
 void		ft_threads_creation(t_data *data);
 
 /**
@@ -29,26 +29,19 @@ void	ft_philos_init(t_data *data)
 	i = -1;
 	data->is_sym_ended = false;
 	data->philos = ft_malloc(data->nb_philos * sizeof(t_philo), data);
-	data->forks = ft_malloc(data->nb_philos * sizeof(t_fork), data);
+	data->forks = ft_malloc(data->nb_philos * sizeof(t_mutex), data);
 	if (data->philos == NULL || data->forks == NULL)
 	{
 		ft_philo_error(MALLOC_ERROR, data);
 		return ;
 	}
 	data->nb_philos_full = 0;
-	pthread_mutex_init(&data->data_mutex, NULL);
-	pthread_mutex_init(&data->log_mutex, NULL);
-	pthread_mutex_init(&data->start, NULL);
-	while (++i < data->nb_philos)
-	{
-		pthread_mutex_init(&data->forks[i].fork, NULL);
-		data->forks[i].fork_id = i;
-	}
-	ft_philo_init(data);
+	if (ft_mutex_creation(data))
+		ft_philo_init(data);
 }
 
 /**
- * Function initializing individual philosopers data
+ * Function initializing data of individual philosopers
  *
  */
 static void	ft_philo_init(t_data *data)
@@ -72,7 +65,7 @@ static void	ft_philo_init(t_data *data)
  * Function assigning forks to each philosoper - 
  *
  */
-static void	ft_assign_forks(t_philo *philo, t_fork *forks, int pos)
+static void	ft_assign_forks(t_philo *philo, t_mutex *forks, int pos)
 {
 	int	philo_nb;
 
@@ -96,13 +89,20 @@ static void	ft_assign_forks(t_philo *philo, t_fork *forks, int pos)
 void	ft_threads_creation(t_data *data)
 {
 	int	i;
+	int	is_success;
 
 	i = -1;
-	pthread_mutex_lock(&data->start);
+	pthread_mutex_lock(&data->start_mutex.lock);
 	while (++i < data->nb_philos)
 	{
-		pthread_create(&data->philos[i].thread_id, NULL, ft_philo_task,
-			&data->philos[i]);
+		is_success = pthread_create(&data->philos[i].thread_id, NULL,
+			ft_philo_task, &data->philos[i]);
+		if (is_success != 0)
+			{
+				ft_wait_previous_threads(data, i);
+				ft_philo_error(THRED_INIT_ERROR, data);
+				break ;
+			}
 	}
-	pthread_mutex_unlock(&data->start);
+	pthread_mutex_unlock(&data->start_mutex.lock);
 }

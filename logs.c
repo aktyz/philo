@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 14:08:46 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 16:12:03 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:34:30 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_philo_log(t_log status, t_philo *philo)
 	elapsed = ft_get_time(MILISEC, philo->data) - philo->data->start_time_mili;
 	if (philo->full)
 		return ;
-	pthread_mutex_lock(&philo->data->log_mutex);
+	pthread_mutex_lock(&philo->data->log_mutex.lock);
 	if (!is_log_off)
 	{
 		if (status == TAKE_FORK)
@@ -46,7 +46,7 @@ void	ft_philo_log(t_log status, t_philo *philo)
 			printf("%-6ld %d died\n", elapsed, philo->id);
 		}
 	}
-	pthread_mutex_unlock(&philo->data->log_mutex);
+	pthread_mutex_unlock(&philo->data->log_mutex.lock);
 }
 
 static inline void	take_fork(long time, int philo)

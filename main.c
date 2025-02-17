@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:07 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 20:06:43 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:57:14 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ int	main(int argc, char *argv[])
 		if (!data.is_error)
 		{
 			ft_philos_init(&data);
-			ft_philo_start(&data);
+			if (!data.is_error)
+				ft_philo_start(&data);
 			ft_philo_clean(&data);
 		}
 	}

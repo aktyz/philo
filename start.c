@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 16:44:49 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:03:55 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,12 @@ void	ft_philo_start(t_data *data)
 				break;
 			}
 	}
-	i = -1;
-	while (++i < data->nb_philos)
-		pthread_join(data->philos[i].thread_id, NULL);
+	if (!data->is_error && data->nb_philos > 1)
+	{
+		i = -1;
+		while (++i < data->nb_philos)
+			pthread_join(data->philos[i].thread_id, NULL);
+	}
 }
 
 /**
@@ -58,7 +61,7 @@ void	*ft_philo_task(void *data)
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
-	ft_wait_for_all(&philo->data->start);
+	ft_wait_for_all(&philo->data->start_mutex.lock);
 	while (!ft_is_philo_finished(philo->data))
 	{
 		if (philo->full)
@@ -85,11 +88,11 @@ void	*ft_philo_task(void *data)
  */
 static void	ft_philo_eat(t_philo *philo)
 {
-	if (!pthread_mutex_lock(&philo->first_fork->fork))
+	if (!pthread_mutex_lock(&philo->first_fork->lock))
 	{
 		ft_philo_log(TAKE_FORK, philo);
-		if (pthread_mutex_lock(&philo->second_fork->fork))
-			pthread_mutex_unlock(&philo->first_fork->fork);
+		if (pthread_mutex_lock(&philo->second_fork->lock))
+			pthread_mutex_unlock(&philo->first_fork->lock);
 		else
 			ft_philo_log(TAKE_FORK, philo);
 	}
@@ -101,13 +104,13 @@ static void	ft_philo_eat(t_philo *philo)
 	}
 	else
 		ft_philo_log(DIE, philo);
-	pthread_mutex_unlock(&philo->first_fork->fork);
-	pthread_mutex_unlock(&philo->second_fork->fork);
+	pthread_mutex_unlock(&philo->first_fork->lock);
+	pthread_mutex_unlock(&philo->second_fork->lock);
 	philo->meals_count++;
 	if (philo->data->min_eat > 0 && philo->meals_count == philo->data->min_eat)
 	{
 		philo->full = true;
-		ft_inc_long(&philo->data->data_mutex, &philo->data->nb_philos_full);
+		ft_inc_long(&philo->data->data_mutex.lock, &philo->data->nb_philos_full);
 	}
 }
 

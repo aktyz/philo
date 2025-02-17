@@ -6,7 +6,7 @@
 #    By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/14 16:28:52 by zslowian          #+#    #+#              #
-#    Updated: 2025/02/15 19:38:41 by zslowian         ###   ########.fr        #
+#    Updated: 2025/02/17 12:10:14 by zslowian         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ SRC = clean.c \
 OBJ = $(SRC:.c=.o)
 
 %.o : %.c
-	@$(CC) $(FLAGS) -c $< -o $@ -g -pthread
+	@$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME): $(OBJ)
 	@$(CC) $(FLAGS) $(OBJ) -o $(NAME)

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:59:18 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 19:54:14 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 11:41:28 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,11 @@ typedef enum e_log
  * My structure to keep a fork
  *
  */
-typedef struct s_fork
+typedef struct s_mutex
 {
-	pthread_mutex_t		fork;
-	int					fork_id;
-}						t_fork;
+	pthread_mutex_t		lock;
+	int					lock_id;
+}						t_mutex;
 
 /**
  * Single philo structure
@@ -84,8 +84,8 @@ typedef struct s_philo
 	long				meals_count;
 	bool				full;
 	long				last_meal_time;
-	t_fork				*first_fork;
-	t_fork				*second_fork;
+	t_mutex				*first_fork;
+	t_mutex				*second_fork;
 	t_data				*data;
 	pthread_t			thread_id;
 }						t_philo;
@@ -106,10 +106,10 @@ struct					s_data
 	long				start_time_micro;
 	long				start_time_mili;
 	bool				is_sym_ended;
-	pthread_mutex_t		data_mutex;
-	pthread_mutex_t		log_mutex;
-	pthread_mutex_t		start;
-	t_fork				*forks;
+	t_mutex				data_mutex;
+	t_mutex				log_mutex;
+	t_mutex				start_mutex;
+	t_mutex				*forks;
 	t_philo				*philos;
 	t_philo_errors		is_error;
 };
@@ -149,6 +149,9 @@ void					ft_inc_long(pthread_mutex_t *lock, long *v);
  * Thread synchronisations and helpers
  *
  */
+bool					ft_mutex_creation(t_data *data);
+void					ft_destroy_previous_mutexes(t_data *data, int failed);
+void					ft_wait_previous_threads(t_data *data, int failed);
 void					ft_threads_creation(t_data *data);
 void					ft_set_start_time(t_data *data);
 void					ft_wait_for_all(pthread_mutex_t *lock);
