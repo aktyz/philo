@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:58 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:01:46 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:22:39 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,13 @@ void	ft_threads_creation(t_data *data)
 	while (++i < data->nb_philos)
 	{
 		is_success = pthread_create(&data->philos[i].thread_id, NULL,
-			ft_philo_task, &data->philos[i]);
+				ft_philo_task, &data->philos[i]);
 		if (is_success != 0)
-			{
-				ft_wait_previous_threads(data, i);
-				ft_philo_error(THRED_INIT_ERROR, data);
-				break ;
-			}
+		{
+			ft_wait_previous_threads(data, i);
+			ft_philo_error(THRED_INIT_ERROR, data);
+			break ;
+		}
 	}
 	pthread_mutex_unlock(&data->start_mutex.lock);
 }

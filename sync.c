@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:31 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 11:50:05 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:21:08 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,14 +81,18 @@ bool	ft_mutex_creation(t_data *data)
 	int	is_success;
 
 	i = -1;
-	if (!(is_success = pthread_mutex_init(&data->data_mutex.lock, NULL)))
+	is_success = pthread_mutex_init(&data->data_mutex.lock, NULL);
+	if (is_success == 0)
 	{
 		data->data_mutex.lock_id = 1;
-		if (!(is_success = pthread_mutex_init(&data->log_mutex.lock, NULL)))
+		is_success = pthread_mutex_init(&data->log_mutex.lock, NULL);
+		if (is_success == 0)
 		{
 			data->log_mutex.lock_id = 1;
-			if(!(is_success = pthread_mutex_init(&data->start_mutex.lock, NULL)))
-			data->start_mutex.lock_id = 1;
+			is_success = pthread_mutex_init(&data->start_mutex.lock,
+					NULL);
+			if (is_success == 0)
+				data->start_mutex.lock_id = 1;
 		}
 	}
 	if (is_success != 0)
@@ -98,7 +102,8 @@ bool	ft_mutex_creation(t_data *data)
 	}
 	while (++i < data->nb_philos)
 	{
-		if (!(is_success = pthread_mutex_init(&data->forks[i].lock, NULL)))
+		is_success = pthread_mutex_init(&data->forks[i].lock, NULL);
+		if (is_success == 0)
 			data->forks[i].lock_id = i;
 		else
 		{
@@ -109,3 +114,4 @@ bool	ft_mutex_creation(t_data *data)
 	}
 	return (true);
 }
+//Error: TOO_MANY_LINES - Function has more than 25 lines

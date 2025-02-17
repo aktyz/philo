@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:21 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/17 12:03:55 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:18:19 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,17 @@ void	ft_philo_start(t_data *data)
 		ft_one_philo(data);
 	else
 		ft_threads_creation(data);
-	while(!ft_is_philo_finished(data))
+	while (!ft_is_philo_finished(data))
 	{
 		i = -1;
 		while (++i < data->nb_philos)
-			if(ft_is_philo_starved(&data->philos[i]))
+		{
+			if (ft_is_philo_starved(&data->philos[i]))
 			{
 				ft_philo_log(DIE, &data->philos[i]);
-				break;
+				break ;
 			}
+		}
 	}
 	if (!data->is_error && data->nb_philos > 1)
 	{
@@ -50,6 +52,7 @@ void	ft_philo_start(t_data *data)
 			pthread_join(data->philos[i].thread_id, NULL);
 	}
 }
+//Error: TOO_MANY_LINES - Function has more than 25 lines
 
 /**
  * Function passed to pthread_create(), it contains the loop
@@ -110,7 +113,8 @@ static void	ft_philo_eat(t_philo *philo)
 	if (philo->data->min_eat > 0 && philo->meals_count == philo->data->min_eat)
 	{
 		philo->full = true;
-		ft_inc_long(&philo->data->data_mutex.lock, &philo->data->nb_philos_full);
+		ft_inc_long(&philo->data->data_mutex.lock,
+			&philo->data->nb_philos_full);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: zslowian <zslowian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/07 16:58:51 by zslowian          #+#    #+#             */
-/*   Updated: 2025/02/15 16:30:29 by zslowian         ###   ########.fr       */
+/*   Updated: 2025/02/17 12:16:14 by zslowian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	ft_usleep(long usec, t_philo *philo, bool is_eating)
 	while (ft_get_time(MICROSEC, philo->data) - start < usec)
 	{
 		if (!is_eating && ft_is_philo_starved(philo))
-			break;
+			break ;
 		if (ft_is_philo_finished(philo->data))
 			break ;
 		elapsed = ft_get_time(MICROSEC, philo->data) - start;
